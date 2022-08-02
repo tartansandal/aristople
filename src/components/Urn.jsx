@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 // import PropTypes from 'prop-types';
 // import styles from "./Urn.module.css";
 import {
-  Button,
+  //  Button,
   Slider,
   SliderTrack,
   SliderFilledTrack,
@@ -23,8 +23,12 @@ import {
 
 const slider = (title, value, setter) => {
 
+  // cache an expensive calculation
+  const log10001 = Math.log(10001);
+
+  // log mapping for min=0, max=10000, and steps=0..100
   const logSetter = (val) => setter(Math.floor(Math.pow(10001, val/100))-1);
-  const inverse   = (val) => Math.floor(100*Math.log1p(val)/Math.log(10001));
+  const inverse   = (val) => Math.floor(100*Math.log1p(val)/log10001);
 
   return (
     <HStack spacing={6}>
