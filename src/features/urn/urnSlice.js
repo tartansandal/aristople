@@ -2,15 +2,73 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const MAX_IN_URN = 10000;
 
+const initialUrn = {
+  total: 0,
+
+  // Exclusive Materials
+  metal: 0,
+  wood: 0,
+
+  // Exclusive Sizes
+  small: 0,
+  large: 0,
+
+  // Exclusive Combinations
+  small_metal: 0,
+  large_metal: 0,
+  small_wood: 0,
+  large_wood: 0,
+};
+
+/*
+ The Urn model has a couple of "built in" assumptions. 
+
+ Some properties are exclusive -- a ball cannot be both Small and Large,
+ neither can it be Metal and Wood -- while other properties can be combined --
+ a ball can be "Small and Metal".  I've grouped these Exclusion sets in the
+ above.
+
+ The number of balls in the Urn is the total of the number distinct balls in
+ our discourse.  The Urn does not contain any "undescribed balls".  So, the
+ sum of the Small and Large balls must be the same as the total of the Urn.
+ Similarly, for the Material set and the Combinations set. In general, the
+ total number of balls in an Exclusion set must be the same as the total
+ number of balls in the Urn.
+
+ Now what is to happen if I change one of the values?
+
+ If I increase/decrease the Total number of balls in the Urn, I should
+ increase/decrease the number of balls in each Exclusion set so that the
+ ratios remain approximately the same.  The most accurate way to do that is to
+ apply the modifications to the Combinations set and let the resulting numbers
+ bubble up to the Material and Size sets.
+
+ If I start at the other end and increase/decrease the number of Large and
+ Metal balls, what should I do?  The easiest approach is to allow the Total
+ number of balls in the Urn (etc) to increase/decrease to compensate.
+
+ Since the urn contains a integer number of balls of each combination, it will
+ not always be possible to keep the ratios exactly the same and will have to
+ introduce some randomness. For example, if we have 1 of each combination (for
+ a total of 4) and increase the total by 1, then we are going to have pick one
+ of the combinations to receive the new ball. That will result in one of the
+ combinations having twice the number balls as the other combinations. In the
+ below we try to do this fairly, but it does make the setting not always
+ deterministic.
+
+ Finally we also cap the total number of balls at a sensible maximum so we don't
+ get rediculous numbers.
+*/
+
 // save on importing lodash
 const sum = list => {
   return list.reduce((a, b) => a + b, 0);
 };
 
-const share = (value, sizes) => {
+const share_value = (value, sizes) => {
   // Split up "value" into integers according to the relative sizes of "sizes".
   //
-  // We assume all sizes are non-negative.
+  // Note: we assume all the "sizes" are non-negative at this point.
 
   let total = sum(sizes);
 
@@ -65,6 +123,12 @@ const share = (value, sizes) => {
 };
 
 const apply_constraints = state => {
+  // Ensure our changes have reflected in a consistent state that reflects out
+  // underlying constraints. For this we take the values for the "Combinations"
+  // set as our base and let the results bubble up. Since messages to the store
+  // may have come form all over the place, and be out of sync, we allow for
+  // some potential crazy values and adjust the results accordingly.
+
   const combination_keys = [
     'small_wood',
     'small_metal',
@@ -109,25 +173,7 @@ const apply_constraints = state => {
 
 export const urnSlice = createSlice({
   name: 'urn',
-
-  initialState: {
-    total: 0,
-
-    // Exclusive Materials
-    metal: 0,
-    wood: 0,
-
-    // Exclusive Sizes
-    small: 0,
-    large: 0,
-
-    // Exclusive Combinations
-    small_metal: 0,
-    large_metal: 0,
-    small_wood: 0,
-    large_wood: 0,
-  },
-
+  initialState: initialUrn,
   reducers: {
     updateTotal: (state, action) => {
       const change = action.payload - state.total;
@@ -139,7 +185,7 @@ export const urnSlice = createSlice({
         large_wood_change,
         small_metal_change,
         large_metal_change,
-      ] = share(change, [
+      ] = share_value(change, [
         state.small_wood,
         state.large_wood,
         state.small_metal,
@@ -158,7 +204,7 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [small_wood_change, large_wood_change] = share(change, [
+      const [small_wood_change, large_wood_change] = share_value(change, [
         state.small_wood,
         state.large_wood,
       ]);
@@ -173,7 +219,7 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [small_metal_change, large_metal_change] = share(change, [
+      const [small_metal_change, large_metal_change] = share_value(change, [
         state.small_metal,
         state.large_metal,
       ]);
@@ -188,7 +234,7 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [small_wood_change, small_metal_change] = share(change, [
+      const [small_wood_change, small_metal_change] = share_value(change, [
         state.small_wood,
         state.small_metal,
       ]);
@@ -203,7 +249,7 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [large_wood_change, large_metal_change] = share(change, [
+      const [large_wood_change, large_metal_change] = share_value(change, [
         state.large_wood,
         state.large_metal,
       ]);
