@@ -8,7 +8,7 @@ import {
   theme,
 } from '@chakra-ui/react';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import Urn from './Urn';
+import Urn from '../features/urn/Urn';
 
 function App() {
   return (
