@@ -9,5 +9,8 @@ test:
 build:
 	npm run build
 
+deploy:
+	npm run deploy
+
 storybook:
 	npm run storybook
