@@ -2,19 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const MAX_IN_URN = 10000;
 
-const sum = (a, b) => a + b;
+// save on importing lodash
+const sum = list => {
+  return list.reduce((a, b) => a + b, 0);
+};
 
 const share = (value, sizes) => {
   // Split up "value" into integers according to the relative sizes of "sizes".
   //
   // We assume all sizes are non-negative.
 
-  let total = sizes.reduce(sum, 0);
+  let total = sum(sizes);
 
   // If all our "sizes" are 0, then we want to split "value" evenly
   if (total === 0) {
     sizes = sizes.map(() => 1);
-    total = sizes.reduce(sum, 0);
+    total = sum(sizes);
   }
 
   // Split "value" according to ratios of the "sizes" to the total
@@ -26,7 +29,7 @@ const share = (value, sizes) => {
 
   // Since our "value" and "sizes" are integers, we may have gone over or under
   // by up to the length of the "sizes" array.
-  let remainder = value - parts.reduce(sum, 0);
+  let remainder = value - sum(parts);
   if (Math.abs(remainder) > sizes.length) {
     // This should not be possible
     console.error('Impossible value for remainder');
@@ -77,7 +80,7 @@ const apply_constraints = state => {
   }
   // The above also implies the total is not negative
 
-  let total = combination_keys.map(k => state[k]).reduce(sum);
+  let total = sum(combination_keys.map(k => state[k]));
 
   // Ensure we don't sum higher than the max that fits in the urn
   if (total > MAX_IN_URN) {
