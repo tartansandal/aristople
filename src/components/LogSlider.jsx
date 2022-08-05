@@ -6,6 +6,7 @@ import {
   SliderThumb,
   // SliderMark,
   HStack,
+  VStack,
   FormLabel,
   NumberInput,
   NumberInputField,
@@ -33,37 +34,40 @@ const LogSlider = ({ title, value, setter, steps = 500, maxValue = 10000 }) => {
   const onNumberChange = val => setter(val);
 
   return (
-    <HStack spacing={6}>
-      <FormLabel w={120}>{title}</FormLabel>
-      <NumberInput
-        maxW="100px"
-        mr="2rem"
-        min={0}
-        max={maxValue}
-        value={value}
-        onChange={onNumberChange}
-      >
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-      <Slider
-        w={200}
-        flex="1"
-        focusThumbOnChange={false}
-        min={0}
-        max={steps}
-        value={inverse(value)}
-        onChange={onSliderChange}
-      >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb boxSize={4} ml={2} />
-      </Slider>
-    </HStack>
+    <VStack align="left">
+      <FormLabel m={0}>{title}</FormLabel>
+      <HStack spacing={0}>
+        <NumberInput
+          size="sm"
+          maxW="100px"
+          mr="1rem"
+          min={0}
+          max={maxValue}
+          value={value}
+          onChange={onNumberChange}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+        <Slider
+          w={200}
+          flex="1"
+          focusThumbOnChange={false}
+          min={0}
+          max={steps}
+          value={inverse(value)}
+          onChange={onSliderChange}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb boxSize={4} ml={2} />
+        </Slider>
+      </HStack>
+    </VStack>
   );
 };
 

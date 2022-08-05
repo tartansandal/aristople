@@ -1,12 +1,7 @@
 import React from 'react';
 import LogSlider from '../../components/LogSlider';
 
-import {
-  //HStack,
-  VStack,
-  Divider,
-  Text,
-} from '@chakra-ui/react';
+import { HStack, VStack, Text, SimpleGrid } from '@chakra-ui/react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -47,66 +42,79 @@ const Urn = () => {
 
   return (
     <VStack spacing={5}>
-      <LogSlider
-        title="Total"
-        value={totalValue}
-        setter={updateTotalValue}
-        maxValue={MAX_IN_URN}
-      />
-      <Divider />
-      <Text>Material</Text>
-      <LogSlider
-        total="Wood"
-        value={woodValue}
-        setter={updateWoodValue}
-        maxValue={MAX_IN_URN}
-      />
-      <LogSlider
-        title="Metal"
-        value={metalValue}
-        setter={updateMetalValue}
-        maxValue={MAX_IN_URN}
-      />
-      <Divider />
-      <Text>Size</Text>
-      <LogSlider
-        title="Small"
-        value={smallValue}
-        setter={updateSmallValue}
-        maxValue={MAX_IN_URN}
-      />
-      <LogSlider
-        title="Large"
-        value={largeValue}
-        setter={updateLargeValue}
-        maxValue={MAX_IN_URN}
-      />
-      <Divider />
-      <Text>Combinations</Text>
-      <LogSlider
-        title="Small and Wood"
-        value={smallWoodValue}
-        setter={updateSmallWoodValue}
-        maxValue={MAX_IN_URN}
-      />
-      <LogSlider
-        title="Large and Wood"
-        value={largeWoodValue}
-        setter={updateLargeWoodValue}
-        maxValue={MAX_IN_URN}
-      />
-      <LogSlider
-        title="Small and Metal"
-        value={smallMetalValue}
-        setter={updateSmallMetalValue}
-        maxValue={MAX_IN_URN}
-      />
-      <LogSlider
-        title="Large and Metal"
-        value={largeMetalValue}
-        setter={updateLargeMetalValue}
-        maxValue={MAX_IN_URN}
-      />
+      <VStack p={3} borderWidth="1px" borderRadius="lg">
+        <LogSlider
+          title="Total"
+          value={totalValue}
+          setter={updateTotalValue}
+          maxValue={MAX_IN_URN}
+        />
+      </VStack>
+      <HStack>
+        <VStack>
+          <Text>Material</Text>
+          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+            <LogSlider
+              title="Wood"
+              value={woodValue}
+              setter={updateWoodValue}
+              maxValue={MAX_IN_URN}
+            />
+            <LogSlider
+              title="Metal"
+              value={metalValue}
+              setter={updateMetalValue}
+              maxValue={MAX_IN_URN}
+            />
+          </VStack>
+        </VStack>
+        <VStack>
+            <Text>Size</Text>
+          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+            <LogSlider
+              title="Small"
+              value={smallValue}
+              setter={updateSmallValue}
+              maxValue={MAX_IN_URN}
+            />
+            <LogSlider
+              title="Large"
+              value={largeValue}
+              setter={updateLargeValue}
+              maxValue={MAX_IN_URN}
+            />
+          </VStack>
+        </VStack>
+      </HStack>
+        <Text>Combinations</Text>
+      <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+        <SimpleGrid columns={2} spacingY={3} spacingX={10}>
+          <LogSlider
+            title="Small and Wood"
+            value={smallWoodValue}
+            setter={updateSmallWoodValue}
+            maxValue={MAX_IN_URN}
+          />
+          <LogSlider
+            title="Large and Wood"
+            value={largeWoodValue}
+            setter={updateLargeWoodValue}
+            maxValue={MAX_IN_URN}
+          />
+          <LogSlider
+            title="Small and Metal"
+            value={smallMetalValue}
+            setter={updateSmallMetalValue}
+            maxValue={MAX_IN_URN}
+          />
+          <LogSlider
+            title="Large and Metal"
+            value={largeMetalValue}
+            setter={updateLargeMetalValue}
+            maxValue={MAX_IN_URN}
+          />
+        </SimpleGrid>
+      </VStack>
     </VStack>
   );
 };
