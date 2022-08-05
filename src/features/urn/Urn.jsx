@@ -1,30 +1,16 @@
-import React, {
-  //useState
-} from 'react';
-// import PropTypes from 'prop-types';
-// import styles from "./Urn.module.css";
+import React from 'react';
+import LogSlider from '../../components/LogSlider';
+
 import {
-  //  Button,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  // SliderMark,
-  HStack,
+  //HStack,
   VStack,
-  // FormControl,
-  FormLabel,
   Divider,
   Text,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
 } from '@chakra-ui/react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
+  MAX_IN_URN,
   updateTotal,
   updateWood,
   updateMetal,
@@ -36,61 +22,6 @@ import {
   updateLargeWood,
 } from './urnSlice';
 
-// cache an expensive calculation
-const log10001 = Math.log(10001);
-
-const slider = (title, value, setter) => {
-
-  // log mapping for min=0, max=10000, and steps=0..100
-  const onSliderChange = v => {
-    let result = Math.floor(Math.pow(10001, v / 100)) - 1;
-    if (isNaN(result)) return 0;
-    setter(result);
-  };
-  const inverse = v => {
-    const result = Math.floor((100 * Math.log1p(v)) / log10001);
-    if (isNaN(result)) return 100;
-    return result;
-  }
-
-  const onNumberChange = val => setter(val);
-
-  return (
-    <HStack spacing={6}>
-      <FormLabel w={120}>{title}</FormLabel>
-      <NumberInput
-        maxW="100px"
-        mr="2rem"
-        min={0}
-        max={10000}
-        value={value}
-        onChange={onNumberChange}
-      >
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-      <Slider
-        w={200}
-        flex="1"
-        focusThumbOnChange={false}
-        min={0}
-        max={100}
-        value={inverse(value)}
-        onChange={onSliderChange}
-      >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb boxSize={4} ml={2} />
-      </Slider>
-    </HStack>
-  );
-};
-
-// <SliderThumb fontSize="sm" boxSize="32px" children={value} />
 const Urn = () => {
   const totalValue = useSelector(state => state.urn.total);
   const metalValue = useSelector(state => state.urn.metal);
@@ -116,21 +47,66 @@ const Urn = () => {
 
   return (
     <VStack spacing={5}>
-      {slider('Total', totalValue, updateTotalValue)}
+      <LogSlider
+        title="Total"
+        value={totalValue}
+        setter={updateTotalValue}
+        maxValue={MAX_IN_URN}
+      />
       <Divider />
       <Text>Material</Text>
-      {slider('Wood', woodValue, updateWoodValue)}
-      {slider('Metal', metalValue, updateMetalValue)}
+      <LogSlider
+        total="Wood"
+        value={woodValue}
+        setter={updateWoodValue}
+        maxValue={MAX_IN_URN}
+      />
+      <LogSlider
+        title="Metal"
+        value={metalValue}
+        setter={updateMetalValue}
+        maxValue={MAX_IN_URN}
+      />
       <Divider />
       <Text>Size</Text>
-      {slider('Small', smallValue, updateSmallValue)}
-      {slider('Large', largeValue, updateLargeValue)}
+      <LogSlider
+        title="Small"
+        value={smallValue}
+        setter={updateSmallValue}
+        maxValue={MAX_IN_URN}
+      />
+      <LogSlider
+        title="Large"
+        value={largeValue}
+        setter={updateLargeValue}
+        maxValue={MAX_IN_URN}
+      />
       <Divider />
       <Text>Combinations</Text>
-      {slider('Small and Wood', smallWoodValue, updateSmallWoodValue)}
-      {slider('Large and Wood', largeWoodValue, updateLargeWoodValue)}
-      {slider('Small and Metal', smallMetalValue, updateSmallMetalValue)}
-      {slider('Large and Metal', largeMetalValue, updateLargeMetalValue)}
+      <LogSlider
+        title="Small and Wood"
+        value={smallWoodValue}
+        setter={updateSmallWoodValue}
+        maxValue={MAX_IN_URN}
+      />
+      <LogSlider
+        title="Large and Wood"
+        value={largeWoodValue}
+        setter={updateLargeWoodValue}
+        maxValue={MAX_IN_URN}
+      />
+      <LogSlider
+        title="Small and Metal"
+        value={smallMetalValue}
+        setter={updateSmallMetalValue}
+        maxValue={MAX_IN_URN}
+      />
+      <LogSlider
+        title="Large and Metal"
+        value={largeMetalValue}
+        setter={updateLargeMetalValue}
+        maxValue={MAX_IN_URN}
+      />
     </VStack>
   );
 };

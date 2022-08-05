@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const MAX_IN_URN = 10000;
+export const MAX_IN_URN = 10000;
 
 const initialUrn = {
   total: 0,
