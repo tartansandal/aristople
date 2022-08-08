@@ -7,7 +7,7 @@ import {
   // HStack,
   VStack,
   // SimpleGrid,
-  Divider,
+  // Divider,
 } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 
