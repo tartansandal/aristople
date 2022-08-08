@@ -70,13 +70,9 @@ const share_value = (value, sizes) => {
   //
   // Note: we assume all the "sizes" are non-negative at this point.
 
+  // Nudge all sizes up so that zeros don't get too sticky
+  sizes = sizes.map((x) => x+1);
   let total = sum(sizes);
-
-  // If all our "sizes" are 0, then we want to split "value" evenly
-  if (total === 0) {
-    sizes = sizes.map(() => 1);
-    total = sum(sizes);
-  }
 
   // Split "value" according to ratios of the "sizes" to the total
   const parts = [];
