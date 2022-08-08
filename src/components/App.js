@@ -4,14 +4,14 @@ import {
   Box,
   // Text,
   Heading,
-  VStack,
+  // VStack,
   // HStack,
   Flex,
   Spacer,
   // Divider,
   Grid,
   GridItem,
-  Center,
+  // Center,
   theme,
 } from '@chakra-ui/react';
 
@@ -41,13 +41,12 @@ function App() {
               <ColorModeSwitcher />
             </Flex>
           </GridItem>
-          <GridItem ml={2} borderWidth={2} borderRadius="md" area={'urn'}>
-    <VStack minH="90vh" justifyContent="center">
+          <GridItem ml={2} borderWidth={2} borderRadius="md" area={'urn'}
+      >
               <Urn />
-    </VStack>
           </GridItem>
           <GridItem pl="2" area={'main'}>
-              <HypotheticalSyllogism />
+            <HypotheticalSyllogism />
           </GridItem>
           <GridItem pl="2" bg="blue.100" area={'footer'}>
             Footer

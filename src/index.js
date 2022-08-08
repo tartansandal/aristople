@@ -5,7 +5,7 @@ import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
-import store from './store'
+import store from './components/Store'
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
