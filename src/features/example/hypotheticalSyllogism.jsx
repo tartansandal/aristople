@@ -56,8 +56,8 @@ const HypotheticalSyllogism = () => {
         <Heading align="left" size="md" mb={5} color="blue.700">
           Material Conditional
         </Heading>
-        <TableContainer size="sm" fontStyle="italic">
-          <Table variant="unstyled">
+        <TableContainer fontStyle="italic">
+          <Table size="md" variant="unstyled">
             <Tbody>
               <Tr>
                 <Td>
@@ -67,14 +67,14 @@ const HypotheticalSyllogism = () => {
                 <Td verticalAlign="middle">
                   <HStack alignContent="center">
                     <Text>1 -</Text>
-                    {Over('N(small and wood)', 'N(total)')}
+                    {Ratio('N(small and wood)', 'N(total)')}
                   </HStack>
                 </Td>
                 <Td>=</Td>
                 <Td>
                   <HStack alignContent="center">
                     <Text>1 -</Text>
-                    {Over(small_wood, total)}
+                    {Ratio(small_wood, total)}
                   </HStack>
                 </Td>
                 <Td>=</Td>
@@ -88,14 +88,14 @@ const HypotheticalSyllogism = () => {
                 <Td>
                   <HStack alignContent="center">
                     <Text>1 -</Text>
-                    {Over('N(large and wood)', 'N(total)')}
+                    {Ratio('N(large and wood)', 'N(total)')}
                   </HStack>
                 </Td>
                 <Td>=</Td>
                 <Td>
                   <HStack alignContent="center">
                     <Text>1 -</Text>
-                    {Over(large_wood, total)}
+                    {Ratio(large_wood, total)}
                   </HStack>
                 </Td>
                 <Td>=</Td>
@@ -109,14 +109,14 @@ const HypotheticalSyllogism = () => {
                 <Td>
                   <HStack alignContent="center">
                     <Text>1 -</Text>
-                    {Over('N(wood and wood)', 'N(total)')}
+                    {Ratio('N(wood and wood)', 'N(total)')}
                   </HStack>
                 </Td>
                 <Td>=</Td>
                 <Td>
                   <HStack alignContent="center">
                     <Text>1 -</Text>
-                    {Over(wood, total)}
+                    {Ratio(wood, total)}
                   </HStack>
                 </Td>
                 <Td>=</Td>
@@ -131,7 +131,7 @@ const HypotheticalSyllogism = () => {
         <Heading align="left" size="md" mb={5} color="blue.700">
           Natural Conditional
         </Heading>
-        <TableContainer size="sm" fontStyle="italic">
+        <TableContainer fontStyle="italic">
           <Table variant="unstyled">
             <Tbody>
               <Tr>
@@ -139,9 +139,9 @@ const HypotheticalSyllogism = () => {
                   Pr(wood <NImp /> large)
                 </Td>
                 <Td>=</Td>
-                <Td>{Over('N(large and wood)', 'N(wood)')}</Td>
+                <Td>{Ratio('N(large and wood)', 'N(wood)')}</Td>
                 <Td>=</Td>
-                <Td>{Over(large_wood, wood)}</Td>
+                <Td>{Ratio(large_wood, wood)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>{(large_wood / wood).toFixed(4)}</Td>
               </Tr>
@@ -150,9 +150,9 @@ const HypotheticalSyllogism = () => {
                   Pr(large <NImp /> metal)
                 </Td>
                 <Td>=</Td>
-                <Td>{Over('N(large and metal)', 'N(large)')}</Td>
+                <Td>{Ratio('N(large and metal)', 'N(large)')}</Td>
                 <Td>=</Td>
-                <Td>{Over(large_metal, large)}</Td>
+                <Td>{Ratio(large_metal, large)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>{(large_metal / large).toFixed(4)}</Td>
               </Tr>
@@ -161,9 +161,9 @@ const HypotheticalSyllogism = () => {
                   Pr(wood <NImp /> metal)
                 </Td>
                 <Td>=</Td>
-                <Td>{Over('N(wood and metal)', 'N(wood)')}</Td>
+                <Td>{Ratio('N(wood and metal)', 'N(wood)')}</Td>
                 <Td>=</Td>
-                <Td>{Over(0, wood)}</Td>
+                <Td>{Ratio(0, wood)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>{(0 / wood).toFixed(4)}</Td>
               </Tr>
@@ -175,15 +175,17 @@ const HypotheticalSyllogism = () => {
   );
 };
 
-const Over = (a, b) => {
+const Ratio = (a, b) => {
   return (
-    <TableContainer size="sm" display="inline">
-      <Tr>
-        <Td textAlign="center">{a}</Td>
-      </Tr>
-      <Tr borderTopWidth={1} borderColor="black">
-        <Td textAlign="center">{b}</Td>
-      </Tr>
+    <TableContainer display="inline">
+      <Table size="sm" variant="unstyled">
+        <Tr>
+          <Td textAlign="center">{a}</Td>
+        </Tr>
+        <Tr borderTopWidth={1} borderColor="black">
+          <Td textAlign="center">{b}</Td>
+        </Tr>
+      </Table>
     </TableContainer>
   );
 };
