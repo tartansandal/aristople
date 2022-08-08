@@ -1,7 +1,7 @@
 import React from 'react';
 import LogSlider from '../../components/LogSlider';
 
-import { HStack, VStack, Text, SimpleGrid } from '@chakra-ui/react';
+import { HStack, VStack, Text, SimpleGrid, Heading, Box } from '@chakra-ui/react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -42,14 +42,15 @@ const Urn = () => {
 
   return (
     <VStack spacing={5}>
-      <VStack p={3} borderWidth="1px" borderRadius="lg">
+      <Heading m={3}>The Urn</Heading>
+      <Box p={3} borderWidth="1px" borderRadius="lg">
         <LogSlider
           title="Total"
           value={totalValue}
           setter={updateTotalValue}
           maxValue={MAX_IN_URN}
         />
-      </VStack>
+      </Box>
       <HStack>
         <VStack>
           <Text>Material</Text>
@@ -69,7 +70,7 @@ const Urn = () => {
           </VStack>
         </VStack>
         <VStack>
-            <Text>Size</Text>
+          <Text>Size</Text>
           <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
             <LogSlider
               title="Small"
@@ -86,7 +87,7 @@ const Urn = () => {
           </VStack>
         </VStack>
       </HStack>
-        <Text>Combinations</Text>
+      <Text>Combinations</Text>
       <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
         <SimpleGrid columns={2} spacingY={3} spacingX={10}>
           <LogSlider
