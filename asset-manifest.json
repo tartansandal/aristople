@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "/aristople/static/js/main.940d03d5.js",
+    "main.js": "/aristople/static/js/main.8a4d8e0e.js",
     "static/js/377.581f34f0.chunk.js": "/aristople/static/js/377.581f34f0.chunk.js",
     "index.html": "/aristople/index.html",
-    "main.940d03d5.js.map": "/aristople/static/js/main.940d03d5.js.map",
+    "main.8a4d8e0e.js.map": "/aristople/static/js/main.8a4d8e0e.js.map",
     "377.581f34f0.chunk.js.map": "/aristople/static/js/377.581f34f0.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.940d03d5.js"
+    "static/js/main.8a4d8e0e.js"
   ]
 }
