@@ -4,13 +4,14 @@ import {
   Box,
   // Text,
   Heading,
-  // VStack,
+  VStack,
   // HStack,
   Flex,
   Spacer,
   // Divider,
   Grid,
   GridItem,
+  Center,
   theme,
 } from '@chakra-ui/react';
 
@@ -41,7 +42,9 @@ function App() {
             </Flex>
           </GridItem>
           <GridItem ml={2} borderWidth={2} borderRadius="md" area={'urn'}>
+    <VStack minH="90vh" justifyContent="center">
               <Urn />
+    </VStack>
           </GridItem>
           <GridItem pl="2" area={'main'}>
               <HypotheticalSyllogism />
