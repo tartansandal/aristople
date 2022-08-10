@@ -15,19 +15,24 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 
-const LogSlider = ({ title, value, setter, steps = 500, maxValue = 10000 }) => {
+const LogSlider = ({
+  title,
+  value,
+  setter,
+  steps = 200,
+  maxValue = 10001,
+}) => {
   // cache an expensive calculation
   const logOfMaxPlus1 = Math.log(maxValue + 1);
 
-  // Log mapping for min=0, max=MAX_IN_URN, and steps=0..steps
-  const onSliderChange = v => {
-    let result = Math.floor(Math.pow(maxValue + 1, v / steps)) - 1;
-    if (isNaN(result)) return 0;
-    setter(result);
+  // inverse of logMapping
+  const expMapping = v => {
+    let result = Math.round(Math.exp((v * logOfMaxPlus1) / steps)) - 1;
+    return result;
   };
-  const inverse = v => {
-    const result = Math.floor((steps * Math.log1p(v)) / logOfMaxPlus1);
-    if (isNaN(result)) return steps;
+  // inverse of expMapping
+  const logMapping = v => {
+    const result = Math.round((steps * Math.log1p(v)) / logOfMaxPlus1);
     return result;
   };
 
@@ -58,8 +63,8 @@ const LogSlider = ({ title, value, setter, steps = 500, maxValue = 10000 }) => {
           focusThumbOnChange={false}
           min={0}
           max={steps}
-          value={inverse(value)}
-          onChange={onSliderChange}
+          value={logMapping(value)}
+          onChange={(v) => setter(expMapping(v))}
         >
           <SliderTrack>
             <SliderFilledTrack />
