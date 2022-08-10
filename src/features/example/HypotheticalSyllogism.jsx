@@ -3,9 +3,12 @@ import React from 'react';
 import {
   Heading,
   Text,
+  Button,
   Box,
   HStack,
   VStack,
+  // Flex,
+  // Grid,
   // SimpleGrid,
   // Divider,
   Table,
@@ -13,8 +16,16 @@ import {
   Tr,
   Td,
   TableContainer,
+  List,
+  ListItem,
+  ListIcon,
+  // OrderedList,
+  // UnorderedList,
 } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
+
+import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateAll } from '../urn/urnSlice';
 
 const MImp = () => {
   return (
@@ -39,6 +50,34 @@ const NImp = () => {
   );
 };
 
+const Presets = () => {
+  const dispatch = useDispatch();
+
+  return (
+    <Box>
+      <List spacing={3}>
+        <ListItem>
+          <ListIcon as={ArrowLeftIcon} color="green.500" />
+          <Button
+            onClick={() =>
+              dispatch(
+                updateAll({
+                  small_wood: 0,
+                  large_wood: 10,
+                  small_metal: 1,
+                  large_metal: 989,
+                })
+              )
+            }
+          >
+            1st Preset
+          </Button>
+        </ListItem>
+      </List>
+    </Box>
+  );
+};
+
 const HypotheticalSyllogism = () => {
   const total = useSelector(state => state.urn.total);
   const wood = useSelector(state => state.urn.wood);
@@ -50,14 +89,16 @@ const HypotheticalSyllogism = () => {
 
   return (
     <VStack spacing={50} alignItems="flex-start" justifyContent="space-between">
+
       <Heading>Hypothetical Syllogism</Heading>
 
+      <Presets />
       <Box>
         <Heading align="left" size="md" mb={5} color="blue.700">
           Material Conditional
         </Heading>
         <TableContainer fontStyle="italic">
-          <Table size="md" variant="unstyled">
+          <Table size="sm" variant="unstyled">
             <Tbody>
               <Tr>
                 <Td>
@@ -132,7 +173,7 @@ const HypotheticalSyllogism = () => {
           Natural Conditional
         </Heading>
         <TableContainer fontStyle="italic">
-          <Table variant="unstyled">
+          <Table size="sm" variant="unstyled">
             <Tbody>
               <Tr>
                 <Td>

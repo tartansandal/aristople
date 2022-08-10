@@ -17,7 +17,7 @@ import {
 
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import Urn from '../features/urn/Urn';
-import HypotheticalSyllogism from '../features/example/hypotheticalSyllogism';
+import HypotheticalSyllogism from '../features/example/HypotheticalSyllogism';
 
 function App() {
   return (
