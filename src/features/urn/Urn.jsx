@@ -61,7 +61,7 @@ const Urn = () => {
       <HStack>
         <VStack>
           <Text>Material</Text>
-          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+          <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
             <LogSlider
               title="Wood"
               value={woodValue}
@@ -78,7 +78,7 @@ const Urn = () => {
         </VStack>
         <VStack>
           <Text>Size</Text>
-          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+          <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
             <LogSlider
               title="Small"
               value={smallValue}
@@ -95,7 +95,7 @@ const Urn = () => {
         </VStack>
       </HStack>
       <Text>Combinations</Text>
-      <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+      <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
         <SimpleGrid columns={2} spacingY={3} spacingX={10}>
           <LogSlider
             title="Small and Wood"
