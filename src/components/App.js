@@ -18,6 +18,7 @@ import {
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import Urn from '../features/urn/Urn';
 import HypotheticalSyllogism from '../features/example/HypotheticalSyllogism';
+import ModusPonens from '../features/example/ModusPonens';
 
 function App() {
   return (
@@ -46,7 +47,7 @@ function App() {
               <Urn />
           </GridItem>
           <GridItem pl="2" area={'main'}>
-            <HypotheticalSyllogism />
+            <ModusPonens />
           </GridItem>
           <GridItem pl="2" bg="blue.100" area={'footer'}>
             Footer
