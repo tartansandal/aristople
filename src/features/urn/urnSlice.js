@@ -71,7 +71,7 @@ const share_value = (value, sizes) => {
   // Note: we assume all the "sizes" are non-negative at this point.
 
   // Nudge all sizes up so that zeros don't get too sticky
-  sizes = sizes.map((x) => x+1);
+  sizes = sizes.map(x => x + 1);
   let total = sum(sizes);
 
   // Split "value" according to ratios of the "sizes" to the total
@@ -124,12 +124,12 @@ const share_value = (value, sizes) => {
   // OK, I'm a little paranoid about the values being wrong here.
   total = sum(parts);
   if (total !== value) {
-    console.error("Sharing value is out by ", total - value)
+    console.error('Sharing value is out by ', total - value);
   }
   return parts;
 };
 
-const apply_constraints = (state, from) => {
+const apply_constraints = (current, previous) => {
   // Ensure our changes will result in a consistent state that reflects out
   // underlying constraints. For this we take the values for the "Combinations"
   // set as our base and let the results bubble up to the other sets and the
@@ -146,32 +146,41 @@ const apply_constraints = (state, from) => {
     'large_metal',
   ];
 
-  // Ensure all the combination values are greater than zero
-  for (let key of combination_keys) {
-    if (state[key] < 0) {
-      console.debug(`Got a negative value for ${key}`);
-      state[key] = 0;
+  try {
+    // Ensure all the combination values are greater than zero
+    for (let key of combination_keys) {
+      if (current[key] < 0) {
+        console.debug(`Got a negative value for ${key}`);
+        current[key] = 0;
+      }
+    }
+    // NB: The above also implies the total is not negative
+
+    let total = sum(combination_keys.map(k => current[k]));
+
+    // Ensure we don't sum higher than the max that fits in the urn
+    if (total > MAX_IN_URN) {
+      throw RangeError;
+    }
+
+    // Ensure all the exclusive subsets add up
+    current.small = current.small_metal + current.small_wood;
+    current.large = current.large_metal + current.large_wood;
+
+    current.wood = current.small_wood + current.large_wood;
+    current.metal = current.small_metal + current.large_metal;
+
+    // Ensure the total in the urn matches the total of the combinations
+    current.total = total;
+  } catch (e) {
+    if (e.name === 'RangeError') {
+      console.debug('Caught a RangeError');
+      // revert our change
+      for (let key in previous) {
+        current[key] = previous[key];
+      }
     }
   }
-  // NB: The above also implies the total is not negative
-
-  let total = sum(combination_keys.map(k => state[k]));
-
-  // Ensure we don't sum higher than the max that fits in the urn
-  if (total > MAX_IN_URN) {
-    throw(RangeError)
-  }
-
-  // Ensure all the exclusive subsets add up
-  state.small = state.small_metal + state.small_wood;
-  state.large = state.large_metal + state.large_wood;
-
-  state.wood = state.small_wood + state.large_wood;
-  state.metal = state.small_metal + state.large_metal;
-
-  // Ensure the total in the urn matches the total of the combinations
-  state.total = total;
-
 };
 
 export const urnSlice = createSlice({
@@ -179,6 +188,7 @@ export const urnSlice = createSlice({
   initialState: initialUrn,
   reducers: {
     updateTotal: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.total;
 
       if (change === 0 || isNaN(change)) return;
@@ -200,21 +210,11 @@ export const urnSlice = createSlice({
       state.small_metal += small_metal_change;
       state.large_metal += large_metal_change;
 
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // Revert our change
-          state.small_wood -= small_wood_change;
-          state.large_wood -= large_wood_change;
-          state.small_metal -= small_metal_change;
-          state.large_metal -= large_metal_change;
-        }
-      }
+      apply_constraints(state, copy);
     },
 
     updateWood: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.wood;
 
       if (change === 0 || isNaN(change)) return;
@@ -227,19 +227,11 @@ export const urnSlice = createSlice({
       state.small_wood += small_wood_change;
       state.large_wood += large_wood_change;
 
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.small_wood -= small_wood_change;
-          state.large_wood -= large_wood_change;
-        }
-      }
+      apply_constraints(state, copy);
     },
 
     updateMetal: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.metal;
 
       if (change === 0 || isNaN(change)) return;
@@ -252,19 +244,11 @@ export const urnSlice = createSlice({
       state.small_metal += small_metal_change;
       state.large_metal += large_metal_change;
 
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.small_metal -= small_metal_change;
-          state.large_metal -= large_metal_change;
-        }
-      }
+      apply_constraints(state, copy);
     },
 
     updateSmall: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.small;
 
       if (change === 0 || isNaN(change)) return;
@@ -277,19 +261,11 @@ export const urnSlice = createSlice({
       state.small_wood += small_wood_change;
       state.small_metal += small_metal_change;
 
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.small_wood -= small_wood_change;
-          state.small_metal -= small_metal_change;
-        }
-      }
+      apply_constraints(state, copy);
     },
 
     updateLarge: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.large;
 
       if (change === 0 || isNaN(change)) return;
@@ -302,81 +278,57 @@ export const urnSlice = createSlice({
       state.large_metal += large_metal_change;
       state.large_wood += large_wood_change;
 
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.large_metal -= large_metal_change;
-          state.large_wood -= large_wood_change;
-        }
-      }
+      apply_constraints(state, copy);
     },
 
     updateSmallMetal: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.small_metal;
 
       if (change === 0 || isNaN(change)) return;
 
       state.small_metal += change;
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.small_metal -= change;
-        }
-      }
+      apply_constraints(state, copy);
     },
     updateLargeMetal: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.large_metal;
 
       if (change === 0 || isNaN(change)) return;
 
       state.large_metal += change;
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.large_metal -= change;
-        }
-      }
+      apply_constraints(state, copy);
     },
     updateSmallWood: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.small_wood;
 
       if (change === 0 || isNaN(change)) return;
 
       state.small_wood += change;
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.small_wood -= change;
-        }
-      }
+      apply_constraints(state, copy);
     },
     updateLargeWood: (state, action) => {
+      const copy = { ...state };
       const change = action.payload - state.large_wood;
 
       if (change === 0 || isNaN(change)) return;
 
       state.large_wood += change;
-      try {
-        apply_constraints(state);
-      }
-      catch(e) {
-        if (e.name === 'RangeError') {
-          // revert our change
-          state.large_wood -= change;
-        }
-      }
+      apply_constraints(state, copy);
+    },
+
+    updateAll: (state, action) => {
+      const copy = { ...state };
+
+      // TODO check each item is defined in payload?
+
+      state.small_wood = action.payload.small_wood;
+      state.large_wood = action.payload.large_wood;
+      state.small_metal = action.payload.small_metal;
+      state.large_metal = action.payload.large_metal;
+
+      apply_constraints(state, copy);
     },
   },
 });
@@ -391,6 +343,7 @@ export const {
   updateLargeMetal,
   updateSmallWood,
   updateLargeWood,
+  updateAll,
 } = urnSlice.actions;
 
 export default urnSlice.reducer;
