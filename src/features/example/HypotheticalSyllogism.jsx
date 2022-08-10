@@ -70,7 +70,7 @@ const Presets = () => {
               )
             }
           >
-            1st Preset
+            Preset: 0, 10, 1, 989
           </Button>
         </ListItem>
       </List>
