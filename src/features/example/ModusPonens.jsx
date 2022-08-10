@@ -39,24 +39,24 @@ const MImp = () => {
 };
 
 // Nice if we could find a font library with nice math symbols
-const NImp = () => {
-  return (
-    <>
-      <Text fontSize="1.5rem" as="span">
-        &rarr;
-      </Text>
-      <sub>n</sub>
-    </>
-  );
-};
+// const NImp = () => {
+//   return (
+//     <>
+//       <Text fontSize="1.5rem" as="span">
+//         &rarr;
+//       </Text>
+//       <sub>n</sub>
+//     </>
+//   );
+// };
 
-const And = () => {
-  return (
-    <Text fontSize="1.5rem" as="span">
-      &and;
-    </Text>
-  );
-};
+// const And = () => {
+//   return (
+//     <Text fontSize="1.5rem" as="span">
+//       &and;
+//     </Text>
+//   );
+// };
 
 const Presets = () => {
   const dispatch = useDispatch();
@@ -88,12 +88,8 @@ const Presets = () => {
 
 const ModusPonens = () => {
   const total = useSelector(state => state.urn.total);
-  const wood = useSelector(state => state.urn.wood);
   const metal = useSelector(state => state.urn.metal);
-  const large = useSelector(state => state.urn.large);
   const large_metal = useSelector(state => state.urn.large_metal);
-  const large_wood = useSelector(state => state.urn.large_wood);
-  // const small_wood = useSelector(state => state.urn.large_wood);
 
   return (
     <VStack spacing={50} alignItems="flex-start" justifyContent="space-between">
