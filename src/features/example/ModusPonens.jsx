@@ -121,24 +121,25 @@ const ModusPonens = () => {
                   Pr(metal <MImp /> large and metal)
                 </Td>
                 <Td>=</Td>
-                <Td>{Ratio('N(total) - N(metal) + N(large and metal)', 'N(total)')}</Td>
+                <Td>
+                  {Ratio(
+                    'N(total) - N(metal) + N(large and metal)',
+                    'N(total)'
+                  )}
+                </Td>
                 <Td>=</Td>
                 <Td>{Ratio(total - metal + large_metal, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(total - metal + large_metal / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {((total - metal + large_metal) / total).toFixed(4)}
+                </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
-                <Td>
-                  Pr(large and metal)
-                </Td>
+                <Td>Pr(large and metal)</Td>
                 <Td>=</Td>
-                <Td>
-                    {Ratio('N(large and metal)', 'N(total)')}
-                </Td>
+                <Td>{Ratio('N(large and metal)', 'N(total)')}</Td>
                 <Td>=</Td>
-                <Td>
-                    {Ratio(large_metal, total)}
-                </Td>
+                <Td>{Ratio(large_metal, total)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>{(large_metal / total).toFixed(4)}</Td>
               </Tr>
@@ -177,17 +178,11 @@ const ModusPonens = () => {
                 <Td isNumeric>{(large_metal / total).toFixed(4)}</Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
-                <Td>
-                  Pr(large and metal)
-                </Td>
+                <Td>Pr(large and metal)</Td>
                 <Td>=</Td>
-                <Td>
-                    {Ratio('N(large and metal)', 'N(total)')}
-                </Td>
+                <Td>{Ratio('N(large and metal)', 'N(total)')}</Td>
                 <Td>=</Td>
-                <Td>
-                    {Ratio(large_metal, total)}
-                </Td>
+                <Td>{Ratio(large_metal, total)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>{(large_metal / total).toFixed(4)}</Td>
               </Tr>
