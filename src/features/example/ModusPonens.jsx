@@ -203,12 +203,14 @@ const Ratio = (a, b) => {
   return (
     <TableContainer display="inline">
       <Table size="sm" variant="unstyled">
-        <Tr>
-          <Td textAlign="center">{a}</Td>
-        </Tr>
-        <Tr borderTopWidth={1} borderColor="black">
-          <Td textAlign="center">{b}</Td>
-        </Tr>
+        <Tbody>
+          <Tr>
+            <Td textAlign="center">{String(a)}</Td>
+          </Tr>
+          <Tr borderTopWidth={1} borderColor="black">
+            <Td textAlign="center">{String(b)}</Td>
+          </Tr>
+        </Tbody>
       </Table>
     </TableContainer>
   );
