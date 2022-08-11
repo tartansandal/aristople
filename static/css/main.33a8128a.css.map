@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.33a8128a.css","mappings":"AAAA,8CACE,cACF","sources":["features/rules/rules.module.css"],"sourcesContent":[".propTable td.fixed {\n  min-width: 7rem;\n}\n"],"names":[],"sourceRoot":""}
