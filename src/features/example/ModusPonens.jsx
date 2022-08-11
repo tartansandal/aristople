@@ -87,9 +87,11 @@ const Presets = () => {
 };
 
 const ModusPonens = () => {
-  const total = useSelector(state => state.urn.total);
-  const metal = useSelector(state => state.urn.metal);
-  const large_metal = useSelector(state => state.urn.large_metal);
+  const current = useSelector(state => state.urn.current);
+
+  const total = current.total;
+  const metal = current.metal;
+  const large_metal = current.large_metal;
 
   return (
     <VStack spacing={50} alignItems="flex-start" justifyContent="space-between">
