@@ -5,7 +5,7 @@ import {
   Text,
   Button,
   Box,
-  HStack,
+  // HStack,
   VStack,
   // Flex,
   // Grid,
@@ -80,17 +80,18 @@ const Presets = () => {
 };
 
 const HypotheticalSyllogism = () => {
-  const total = useSelector(state => state.urn.total);
-  const wood = useSelector(state => state.urn.wood);
-  // const metal = useSelector(state => state.urn.metal);
-  const large = useSelector(state => state.urn.large);
-  const large_metal = useSelector(state => state.urn.large_metal);
-  const large_wood = useSelector(state => state.urn.large_wood);
-  const small_wood = useSelector(state => state.urn.large_wood);
+  const current = useSelector(state => state.urn.current);
+
+  const total = current.total;
+  const wood = current.wood;
+  // const metal = metal;
+  const large = current.large;
+  const large_metal = current.large_metal;
+  const large_wood = current.large_wood;
+  // const small_wood = current.large_wood;
 
   return (
     <VStack spacing={50} alignItems="flex-start" justifyContent="space-between">
-
       <Heading>Hypothetical Syllogism</Heading>
 
       <Presets />
@@ -107,20 +108,16 @@ const HypotheticalSyllogism = () => {
                 </Td>
                 <Td>=</Td>
                 <Td verticalAlign="middle">
-                  <HStack alignContent="center">
-                    <Text>1 -</Text>
-                    {Ratio('N(small and wood)', 'N(total)')}
-                  </HStack>
+                  {Ratio('N(total) - N(wood) + N(large and wood)', 'N(total)')}
                 </Td>
                 <Td>=</Td>
                 <Td className={styles.fixed}>
-                  <HStack alignContent="center">
-                    <Text>1 -</Text>
-                    {Ratio(small_wood, total)}
-                  </HStack>
+                  {Ratio(total - wood + large_wood, total)}
                 </Td>
                 <Td>=</Td>
-                <Td isNumeric>{(1 - small_wood / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {((total - wood + large_wood) / total).toFixed(4)}
+                </Td>
               </Tr>
               <Tr>
                 <Td>
@@ -128,20 +125,17 @@ const HypotheticalSyllogism = () => {
                 </Td>
                 <Td>=</Td>
                 <Td>
-                  <HStack alignContent="center">
-                    <Text>1 -</Text>
-                    {Ratio('N(large and wood)', 'N(total)')}
-                  </HStack>
+                  {Ratio(
+                    'N(total) - N(large) + N(large and metal)',
+                    'N(total)'
+                  )}
                 </Td>
                 <Td>=</Td>
-                <Td>
-                  <HStack alignContent="center">
-                    <Text>1 -</Text>
-                    {Ratio(large_wood, total)}
-                  </HStack>
-                </Td>
+                <Td>{Ratio(total - large + large_metal, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(1 - large_wood / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {((total - large + large_metal) / total).toFixed(4)}
+                </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
                 <Td>
@@ -149,20 +143,12 @@ const HypotheticalSyllogism = () => {
                 </Td>
                 <Td>=</Td>
                 <Td>
-                  <HStack alignContent="center">
-                    <Text>1 -</Text>
-                    {Ratio('N(wood and wood)', 'N(total)')}
-                  </HStack>
+                  {Ratio('N(total) - N(wood) + N(wood and metal)', 'N(total)')}
                 </Td>
                 <Td>=</Td>
-                <Td>
-                  <HStack alignContent="center">
-                    <Text>1 -</Text>
-                    {Ratio(wood, total)}
-                  </HStack>
-                </Td>
+                <Td>{Ratio(total - wood + 0, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(1 - wood / total).toFixed(4)}</Td>
+                <Td isNumeric>{((total - wood) / total).toFixed(4)}</Td>
               </Tr>
             </Tbody>
           </Table>
@@ -221,12 +207,14 @@ const Ratio = (a, b) => {
   return (
     <TableContainer display="inline">
       <Table size="sm" variant="unstyled">
-        <Tr>
-          <Td textAlign="center">{a}</Td>
-        </Tr>
-        <Tr borderTopWidth={1} borderColor="black">
-          <Td textAlign="center">{b}</Td>
-        </Tr>
+        <Tbody>
+          <Tr>
+            <Td textAlign="center">{String(a)}</Td>
+          </Tr>
+          <Tr borderTopWidth={1} borderColor="black">
+            <Td textAlign="center">{String(b)}</Td>
+          </Tr>
+        </Tbody>
       </Table>
     </TableContainer>
   );
