@@ -26,6 +26,7 @@ import {
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateAll } from '../urn/urnSlice';
+import styles from './rules.module.css';
 
 const MImp = () => {
   return (
@@ -103,15 +104,15 @@ const ModusPonens = () => {
           Material Conditional
         </Heading>
         <TableContainer fontStyle="italic">
-          <Table size="sm" variant="unstyled">
+          <Table size="sm" variant="unstyled" className={styles.propTable}>
             <Tbody>
               <Tr>
                 <Td>Pr(metal)</Td>
                 <Td>=</Td>
                 <Td verticalAlign="middle">{Ratio('N(metal)', 'N(total)')}</Td>
                 <Td>=</Td>
-                <Td>
-                  <HStack alignContent="center">{Ratio(metal, total)}</HStack>
+                <Td className={styles.fixed}>
+                  {Ratio(metal, total)}
                 </Td>
                 <Td>=</Td>
                 <Td isNumeric>{(metal / total).toFixed(4)}</Td>
@@ -153,15 +154,14 @@ const ModusPonens = () => {
           Natural Conditional
         </Heading>
         <TableContainer fontStyle="italic">
-          <Table size="sm" variant="unstyled">
+          <Table size="sm" variant="unstyled" className={styles.propTable}>
             <Tbody>
               <Tr>
                 <Td>Pr(metal)</Td>
                 <Td>=</Td>
                 <Td verticalAlign="middle">{Ratio('N(metal)', 'N(total)')}</Td>
                 <Td>=</Td>
-                <Td>
-                  <HStack alignContent="center">{Ratio(metal, total)}</HStack>
+                <Td className={styles.fixed}>{Ratio(metal, total)}
                 </Td>
                 <Td>=</Td>
                 <Td isNumeric>{(metal / total).toFixed(4)}</Td>

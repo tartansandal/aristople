@@ -26,6 +26,7 @@ import {
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateAll } from '../urn/urnSlice';
+import styles from './rules.module.css';
 
 const MImp = () => {
   return (
@@ -98,7 +99,7 @@ const HypotheticalSyllogism = () => {
           Material Conditional
         </Heading>
         <TableContainer fontStyle="italic">
-          <Table size="sm" variant="unstyled">
+          <Table size="sm" variant="unstyled" className={styles.propTable}>
             <Tbody>
               <Tr>
                 <Td>
@@ -112,7 +113,7 @@ const HypotheticalSyllogism = () => {
                   </HStack>
                 </Td>
                 <Td>=</Td>
-                <Td>
+                <Td className={styles.fixed}>
                   <HStack alignContent="center">
                     <Text>1 -</Text>
                     {Ratio(small_wood, total)}
@@ -173,7 +174,7 @@ const HypotheticalSyllogism = () => {
           Natural Conditional
         </Heading>
         <TableContainer fontStyle="italic">
-          <Table size="sm" variant="unstyled">
+          <Table size="sm" variant="unstyled" className={styles.propTable}>
             <Tbody>
               <Tr>
                 <Td>
@@ -182,7 +183,7 @@ const HypotheticalSyllogism = () => {
                 <Td>=</Td>
                 <Td>{Ratio('N(large and wood)', 'N(wood)')}</Td>
                 <Td>=</Td>
-                <Td>{Ratio(large_wood, wood)}</Td>
+                <Td className={styles.fixed}>{Ratio(large_wood, wood)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>{(large_wood / wood).toFixed(4)}</Td>
               </Tr>
