@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
   // SliderMark,
+  Tooltip,
   HStack,
   VStack,
   FormLabel,
@@ -15,28 +16,44 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 
-const LogSlider = ({
-  title,
-  value,
-  setter,
-  steps = 200,
-  maxValue = 10001,
-}) => {
+const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
   // cache an expensive calculation
   const logOfMaxPlus1 = Math.log(maxValue + 1);
 
-  // inverse of logMapping
-  const expMapping = v => {
-    let result = Math.round(Math.exp((v * logOfMaxPlus1) / steps)) - 1;
+  // inverse of or custom log function
+  const exp = val => {
+    let result = Math.round(Math.exp((val * logOfMaxPlus1) / steps)) - 1;
     return result;
   };
-  // inverse of expMapping
-  const logMapping = v => {
-    const result = Math.round((steps * Math.log1p(v)) / logOfMaxPlus1);
-    return result;
+  // inverse of our custom exp function
+  const log = val => {
+    return Math.round((steps * Math.log1p(val)) / logOfMaxPlus1);
   };
 
-  const onNumberChange = val => setter(val);
+  // a memoized version for use in useEffect
+  const memoizedLog = useCallback(
+    (val) => {
+      return Math.round((steps * Math.log1p(val)) / logOfMaxPlus1);
+    },
+    [steps, logOfMaxPlus1],
+  );
+
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [sliderValue, setSliderValue] = useState(log(value));
+
+  // so adjacent sliders updatewiehn the state changes
+  useEffect( () => {
+    setSliderValue(memoizedLog(value));
+    }, [value, memoizedLog]
+  );
+
+  const onSliderChangeEnd = (v) => {
+    const new_value = exp(v);
+    setter(new_value);
+    if (value !== new_value) {
+      setSliderValue(memoizedLog(value))
+    }
+  };
 
   return (
     <VStack align="left">
@@ -49,7 +66,7 @@ const LogSlider = ({
           min={0}
           max={maxValue}
           value={value}
-          onChange={onNumberChange}
+          onChange={v => setter(v)}
         >
           <NumberInputField />
           <NumberInputStepper>
@@ -63,13 +80,26 @@ const LogSlider = ({
           focusThumbOnChange={false}
           min={0}
           max={steps}
-          value={logMapping(value)}
-          onChange={(v) => setter(expMapping(v))}
+          value={sliderValue}
+          onChange={v => setSliderValue(v)}
+          onChangeEnd={onSliderChangeEnd}
+
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
         >
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
-          <SliderThumb boxSize={4} ml={2} />
+          <Tooltip
+            hasArrow
+            bg='blue.500'
+            color='white'
+            placement="top"
+            isOpen={showTooltip}
+            label={exp(sliderValue)}
+          >
+            <SliderThumb />
+          </Tooltip>
         </Slider>
       </HStack>
     </VStack>
