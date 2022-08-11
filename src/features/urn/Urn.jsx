@@ -38,15 +38,15 @@ const MyLogSlider = props => {
 };
 
 const Urn = () => {
-  const totalValue = useSelector(state => state.urn.total);
-  const metalValue = useSelector(state => state.urn.metal);
-  const woodValue = useSelector(state => state.urn.wood);
-  const smallValue = useSelector(state => state.urn.small);
-  const largeValue = useSelector(state => state.urn.large);
-  const smallWoodValue = useSelector(state => state.urn.small_wood);
-  const largeWoodValue = useSelector(state => state.urn.large_wood);
-  const smallMetalValue = useSelector(state => state.urn.small_metal);
-  const largeMetalValue = useSelector(state => state.urn.large_metal);
+  const totalValue = useSelector(state => state.urn.current.total);
+  const metalValue = useSelector(state => state.urn.current.metal);
+  const woodValue = useSelector(state => state.urn.current.wood);
+  const smallValue = useSelector(state => state.urn.current.small);
+  const largeValue = useSelector(state => state.urn.current.large);
+  const smallWoodValue = useSelector(state => state.urn.current.small_wood);
+  const largeWoodValue = useSelector(state => state.urn.current.large_wood);
+  const smallMetalValue = useSelector(state => state.urn.current.small_metal);
+  const largeMetalValue = useSelector(state => state.urn.current.large_metal);
 
   const dispatch = useDispatch();
 

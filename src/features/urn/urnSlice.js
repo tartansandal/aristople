@@ -63,9 +63,6 @@ const initialUrn = {
     large_metal: 0,
     small_wood: 0,
     large_wood: 0,
-
-    error: false, // whether an error state was triggered
-    remainder: 0, // the remainer that had to be distributed
   },
 
   // Track a proposed change to current values
@@ -168,7 +165,7 @@ const share_value = (value, sizes) => {
   return parts;
 };
 
-const apply_constraints = (proposed, current) => {
+const apply_constraints = ( current, proposed ) => {
   // Ensure our changes will result in a consistent state that reflects out
   // underlying constraints. For this we take the values for the "Combinations"
   // set as our base and let the results bubble up to the other sets and the
@@ -178,6 +175,8 @@ const apply_constraints = (proposed, current) => {
   // out of sync, we'll be defensive and allow for some potential crazy values
   // and adjust the results accordingly.
 
+  proposed.error = false;
+
   const combination_keys = [
     'small_wood',
     'small_metal',
@@ -185,40 +184,33 @@ const apply_constraints = (proposed, current) => {
     'large_metal',
   ];
 
-  try {
-    // Ensure all the combination values are greater than zero
-    for (let key of combination_keys) {
-      if (proposed[key] < 0) {
-        console.debug(`Got a negative value for ${key}`);
-        proposed[key] = 0;
-      }
+  // Ensure all the combination values are non-negative
+  for (let key of combination_keys) {
+    if (proposed[key] < 0) {
+      console.debug(`Got a negative value for ${key}`);
+      proposed[key] = 0;
     }
-    // NB: The above also implies the total is not negative
+  }
+  // NB: The above also implies the total is not negative
 
-    let total = sum(combination_keys.map(k => proposed[k]));
+  // Ensure all the exclusive subsets add up
+  proposed.small = proposed.small_metal + proposed.small_wood;
+  proposed.large = proposed.large_metal + proposed.large_wood;
 
-    // Ensure we don't sum higher than the max that fits in the urn
-    if (total > MAX_IN_URN) {
-      throw RangeError;
-    }
+  proposed.wood = proposed.small_wood + proposed.large_wood;
+  proposed.metal = proposed.small_metal + proposed.large_metal;
 
-    // Ensure all the exclusive subsets add up
-    proposed.small = proposed.small_metal + proposed.small_wood;
-    proposed.large = proposed.large_metal + proposed.large_wood;
+  // Ensure the total in the urn matches the total of the combinations
+  proposed.total = sum(combination_keys.map(k => proposed[k]));
 
-    proposed.wood = proposed.small_wood + proposed.large_wood;
-    proposed.metal = proposed.small_metal + proposed.large_metal;
+  // Ensure we don't sum higher than the max that fits in the urn
+  if (proposed.total > MAX_IN_URN || proposed.total < 0) {
+    proposed.error = true;
+    return; // abort this attempted modification
+  }
 
-    // Ensure the total in the urn matches the total of the combinations
-    proposed.total = total;
-  } catch (e) {
-    if (e.name === 'RangeError') {
-      console.debug('Caught a RangeError');
-      // revert our change
-      for (let key in current) {
-        proposed[key] = current[key];
-      }
-    }
+  for (let key in current) {
+    current[key] = proposed[key];
   }
 };
 
@@ -230,7 +222,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.total;
+      const change = action.payload - current.total;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -258,7 +250,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.wood;
+      const change = action.payload - current.wood;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -277,7 +269,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.metal;
+      const change = action.payload - current.metal;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -296,7 +288,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.small;
+      const change = action.payload - current.small;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -315,7 +307,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.large;
+      const change = action.payload - current.large;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -334,7 +326,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.small_metal;
+      const change = action.payload - current.small_metal;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -346,7 +338,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.large_metal;
+      const change = action.payload - current.large_metal;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -358,7 +350,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.small_wood;
+      const change = action.payload - current.small_wood;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -370,7 +362,7 @@ export const urnSlice = createSlice({
       const current = state.current;
       const proposed = state.proposed;
 
-      const change = action.payload - state.large_wood;
+      const change = action.payload - current.large_wood;
 
       if (change === 0 || isNaN(change)) return;
 
