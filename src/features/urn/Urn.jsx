@@ -24,6 +24,19 @@ import {
   updateLargeWood,
 } from './urnSlice';
 
+// Factor out setting "maxValue" and "steps"
+const MyLogSlider = props => {
+  return (
+    <LogSlider
+      title={props.title}
+      value={props.value}
+      setter={props.setter}
+      maxValue={MAX_IN_URN}
+      steps={200}
+    />
+  );
+};
+
 const Urn = () => {
   const totalValue = useSelector(state => state.urn.total);
   const metalValue = useSelector(state => state.urn.metal);
@@ -51,45 +64,40 @@ const Urn = () => {
     <VStack spacing={5}>
       <Heading m={3}>The Urn</Heading>
       <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
-        <LogSlider
+        <MyLogSlider
           title="Total"
           value={totalValue}
           setter={updateTotalValue}
-          maxValue={MAX_IN_URN}
         />
       </VStack>
       <HStack>
         <VStack>
           <Text>Material</Text>
           <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
-            <LogSlider
+            <MyLogSlider
               title="Wood"
               value={woodValue}
               setter={updateWoodValue}
-              maxValue={MAX_IN_URN}
             />
-            <LogSlider
+            <MyLogSlider
               title="Metal"
               value={metalValue}
               setter={updateMetalValue}
-              maxValue={MAX_IN_URN}
             />
           </VStack>
         </VStack>
         <VStack>
           <Text>Size</Text>
           <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
-            <LogSlider
+            <MyLogSlider
               title="Small"
               value={smallValue}
               setter={updateSmallValue}
-              maxValue={MAX_IN_URN}
             />
-            <LogSlider
+            <MyLogSlider
               title="Large"
               value={largeValue}
               setter={updateLargeValue}
-              maxValue={MAX_IN_URN}
             />
           </VStack>
         </VStack>
@@ -97,29 +105,25 @@ const Urn = () => {
       <Text>Combinations</Text>
       <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
         <SimpleGrid columns={2} spacingY={3} spacingX={10}>
-          <LogSlider
+          <MyLogSlider
             title="Small and Wood"
             value={smallWoodValue}
             setter={updateSmallWoodValue}
-            maxValue={MAX_IN_URN}
           />
-          <LogSlider
+          <MyLogSlider
             title="Large and Wood"
             value={largeWoodValue}
             setter={updateLargeWoodValue}
-            maxValue={MAX_IN_URN}
           />
-          <LogSlider
+          <MyLogSlider
             title="Small and Metal"
             value={smallMetalValue}
             setter={updateSmallMetalValue}
-            maxValue={MAX_IN_URN}
           />
-          <LogSlider
+          <MyLogSlider
             title="Large and Metal"
             value={largeMetalValue}
             setter={updateLargeMetalValue}
-            maxValue={MAX_IN_URN}
           />
         </SimpleGrid>
       </VStack>
