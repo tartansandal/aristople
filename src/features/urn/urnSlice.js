@@ -1,26 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-
-export const MAX_IN_URN = 10000;
-
-const initialUrn = {
-  total: 0,
-
-  // Exclusive Materials
-  metal: 0,
-  wood: 0,
-
-  // Exclusive Sizes
-  small: 0,
-  large: 0,
-
-  // Exclusive Combinations
-  small_metal: 0,
-  large_metal: 0,
-  small_wood: 0,
-  large_wood: 0,
-};
-
 /*
+ * FIXME: update this
+ *
  The Urn model has a couple of "built in" assumptions. 
 
  Some properties are exclusive -- a ball cannot be both Small and Large,
@@ -60,16 +40,71 @@ const initialUrn = {
  get rediculous numbers.
 */
 
-// save on importing lodash
+import { createSlice } from '@reduxjs/toolkit';
+
+export const MAX_IN_URN = 10000;
+
+const initialUrn = {
+
+  // The current values being used for calculations
+  current : {
+    total: 0,
+
+    // Exclusive Materials
+    metal: 0,
+    wood: 0,
+
+    // Exclusive Sizes
+    small: 0,
+    large: 0,
+
+    // Exclusive Combinations
+    small_metal: 0,
+    large_metal: 0,
+    small_wood: 0,
+    large_wood: 0,
+
+    error: false, // whether an error state was triggered
+    remainder: 0, // the remainer that had to be distributed
+  },
+
+  // Track a proposed change to current values
+  proposed : {
+    total: 0,
+
+    // Exclusive Materials
+    metal: 0,
+    wood: 0,
+
+    // Exclusive Sizes
+    small: 0,
+    large: 0,
+
+    // Exclusive Combinations
+    small_metal: 0,
+    large_metal: 0,
+    small_wood: 0,
+    large_wood: 0,
+
+    error: false, // whether an error state is triggered
+    remainder: 0, // the remainer that has to be distributed
+  },
+};
+
+
+// Instead of importing all of lodash
 const sum = list => {
   return list.reduce((a, b) => a + b, 0);
 };
 
 const share_value = (value, sizes) => {
-  // Split up "value" into integers according to the relative sizes of "sizes".
+  // Split up "value" into an ordered list of integers according to the relative
+  // sizes of "sizes" list.
   //
-  // Note: we assume all the "sizes" are non-negative at this point.
+  // Note: since apply_constraints() has been run, we can assume all the values
+  // in the "sizes" list are non-negative at this point.
 
+  // FIXME: only do this if at least one number is zero
   // Nudge all sizes up so that zeros don't get too sticky
   sizes = sizes.map(x => x + 1);
   let total = sum(sizes);
@@ -84,8 +119,9 @@ const share_value = (value, sizes) => {
   // Since our "value" and "sizes" are integers, we may have gone over or under
   // by up to the length of the "sizes" array.
   let remainder = value - sum(parts);
+
+  // This should not be possible, but lets trap and adjust in case of bugs
   if (Math.abs(remainder) > sizes.length) {
-    // This should not be possible, but lets trap and adjust in case of bugs
     console.error(
       'Got an impossible value for remainder: ignoring value change'
     );
@@ -108,6 +144,8 @@ const share_value = (value, sizes) => {
       break;
     }
     // Pick a random index
+    // FIXME: we should pick based on the distribution of sizes not a flat
+    // random distribution.
     let index = Math.floor(Math.random() * parts.length);
     if (remainder > 0) {
       parts[index]++;
@@ -121,7 +159,8 @@ const share_value = (value, sizes) => {
     }
   }
 
-  // OK, I'm a little paranoid about the values being wrong here.
+  // I'm a little paranoid about the above, so
+  // raise an error if my calculations are wrong.
   total = sum(parts);
   if (total !== value) {
     console.error('Sharing value is out by ', total - value);
@@ -129,7 +168,7 @@ const share_value = (value, sizes) => {
   return parts;
 };
 
-const apply_constraints = (current, previous) => {
+const apply_constraints = (proposed, current) => {
   // Ensure our changes will result in a consistent state that reflects out
   // underlying constraints. For this we take the values for the "Combinations"
   // set as our base and let the results bubble up to the other sets and the
@@ -149,14 +188,14 @@ const apply_constraints = (current, previous) => {
   try {
     // Ensure all the combination values are greater than zero
     for (let key of combination_keys) {
-      if (current[key] < 0) {
+      if (proposed[key] < 0) {
         console.debug(`Got a negative value for ${key}`);
-        current[key] = 0;
+        proposed[key] = 0;
       }
     }
     // NB: The above also implies the total is not negative
 
-    let total = sum(combination_keys.map(k => current[k]));
+    let total = sum(combination_keys.map(k => proposed[k]));
 
     // Ensure we don't sum higher than the max that fits in the urn
     if (total > MAX_IN_URN) {
@@ -164,20 +203,20 @@ const apply_constraints = (current, previous) => {
     }
 
     // Ensure all the exclusive subsets add up
-    current.small = current.small_metal + current.small_wood;
-    current.large = current.large_metal + current.large_wood;
+    proposed.small = proposed.small_metal + proposed.small_wood;
+    proposed.large = proposed.large_metal + proposed.large_wood;
 
-    current.wood = current.small_wood + current.large_wood;
-    current.metal = current.small_metal + current.large_metal;
+    proposed.wood = proposed.small_wood + proposed.large_wood;
+    proposed.metal = proposed.small_metal + proposed.large_metal;
 
     // Ensure the total in the urn matches the total of the combinations
-    current.total = total;
+    proposed.total = total;
   } catch (e) {
     if (e.name === 'RangeError') {
       console.debug('Caught a RangeError');
       // revert our change
-      for (let key in previous) {
-        current[key] = previous[key];
+      for (let key in current) {
+        proposed[key] = current[key];
       }
     }
   }
@@ -188,7 +227,9 @@ export const urnSlice = createSlice({
   initialState: initialUrn,
   reducers: {
     updateTotal: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.total;
 
       if (change === 0 || isNaN(change)) return;
@@ -199,136 +240,156 @@ export const urnSlice = createSlice({
         small_metal_change,
         large_metal_change,
       ] = share_value(change, [
-        state.small_wood,
-        state.large_wood,
-        state.small_metal,
-        state.large_metal,
+        current.small_wood,
+        current.large_wood,
+        current.small_metal,
+        current.large_metal,
       ]);
 
-      state.small_wood += small_wood_change;
-      state.large_wood += large_wood_change;
-      state.small_metal += small_metal_change;
-      state.large_metal += large_metal_change;
+      proposed.small_wood += small_wood_change;
+      proposed.large_wood += large_wood_change;
+      proposed.small_metal += small_metal_change;
+      proposed.large_metal += large_metal_change;
 
-      apply_constraints(state, copy);
+      apply_constraints(current, proposed);
     },
 
     updateWood: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.wood;
 
       if (change === 0 || isNaN(change)) return;
 
       const [small_wood_change, large_wood_change] = share_value(change, [
-        state.small_wood,
-        state.large_wood,
+        current.small_wood,
+        current.large_wood,
       ]);
 
-      state.small_wood += small_wood_change;
-      state.large_wood += large_wood_change;
+      proposed.small_wood += small_wood_change;
+      proposed.large_wood += large_wood_change;
 
-      apply_constraints(state, copy);
+      apply_constraints(current, proposed);
     },
 
     updateMetal: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.metal;
 
       if (change === 0 || isNaN(change)) return;
 
       const [small_metal_change, large_metal_change] = share_value(change, [
-        state.small_metal,
-        state.large_metal,
+        current.small_metal,
+        current.large_metal,
       ]);
 
-      state.small_metal += small_metal_change;
-      state.large_metal += large_metal_change;
+      proposed.small_metal += small_metal_change;
+      proposed.large_metal += large_metal_change;
 
-      apply_constraints(state, copy);
+      apply_constraints(current, proposed);
     },
 
     updateSmall: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.small;
 
       if (change === 0 || isNaN(change)) return;
 
       const [small_wood_change, small_metal_change] = share_value(change, [
-        state.small_wood,
-        state.small_metal,
+        current.small_wood,
+        current.small_metal,
       ]);
 
-      state.small_wood += small_wood_change;
-      state.small_metal += small_metal_change;
+      proposed.small_wood += small_wood_change;
+      proposed.small_metal += small_metal_change;
 
-      apply_constraints(state, copy);
+      apply_constraints(current, proposed);
     },
 
     updateLarge: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.large;
 
       if (change === 0 || isNaN(change)) return;
 
       const [large_wood_change, large_metal_change] = share_value(change, [
-        state.large_wood,
-        state.large_metal,
+        current.large_wood,
+        current.large_metal,
       ]);
 
-      state.large_metal += large_metal_change;
-      state.large_wood += large_wood_change;
+      proposed.large_metal += large_metal_change;
+      proposed.large_wood += large_wood_change;
 
-      apply_constraints(state, copy);
+      apply_constraints(current, proposed);
     },
 
     updateSmallMetal: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.small_metal;
 
       if (change === 0 || isNaN(change)) return;
 
-      state.small_metal += change;
-      apply_constraints(state, copy);
+      proposed.small_metal += change;
+      apply_constraints(current, proposed);
     },
+
     updateLargeMetal: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.large_metal;
 
       if (change === 0 || isNaN(change)) return;
 
-      state.large_metal += change;
-      apply_constraints(state, copy);
+      proposed.large_metal += change;
+      apply_constraints(current, proposed);
     },
+
     updateSmallWood: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.small_wood;
 
       if (change === 0 || isNaN(change)) return;
 
-      state.small_wood += change;
-      apply_constraints(state, copy);
+      proposed.small_wood += change;
+      apply_constraints(current, proposed);
     },
+
     updateLargeWood: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
+
       const change = action.payload - state.large_wood;
 
       if (change === 0 || isNaN(change)) return;
 
-      state.large_wood += change;
-      apply_constraints(state, copy);
+      proposed.large_wood += change;
+      apply_constraints(current, proposed);
     },
 
     updateAll: (state, action) => {
-      const copy = { ...state };
+      const current = state.current;
+      const proposed = state.proposed;
 
       // TODO check each item is defined in payload?
 
-      state.small_wood = action.payload.small_wood;
-      state.large_wood = action.payload.large_wood;
-      state.small_metal = action.payload.small_metal;
-      state.large_metal = action.payload.large_metal;
+      proposed.small_wood = action.payload.small_wood;
+      proposed.large_wood = action.payload.large_wood;
+      proposed.small_metal = action.payload.small_metal;
+      proposed.large_metal = action.payload.large_metal;
 
-      apply_constraints(state, copy);
+      apply_constraints(current, proposed);
     },
   },
 });
