@@ -12,9 +12,11 @@ import {
   Grid,
   GridItem,
   // Center,
+  Link,
   theme,
 } from '@chakra-ui/react';
 
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import Urn from '../features/urn/Urn';
 import HypotheticalSyllogism from '../features/rules/HypotheticalSyllogism';
@@ -50,7 +52,9 @@ function App() {
             <HypotheticalSyllogism />
           </GridItem>
           <GridItem pl="2" bg="blue.100" area={'footer'}>
-            Footer
+            <Link href='https://github.com/tartansandal/aristople' isExternal>
+              Aristople on GitHub <ExternalLinkIcon mx='2px' />
+            </Link>
           </GridItem>
         </Grid>
       </Box>
