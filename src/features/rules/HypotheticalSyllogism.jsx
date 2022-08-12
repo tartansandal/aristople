@@ -27,29 +27,7 @@ import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateAll } from '../urn/urnSlice';
 import styles from './rules.module.css';
-
-const MImp = () => {
-  return (
-    <>
-      <Text fontSize="1.5rem" as="span">
-        &rarr;
-      </Text>
-      <sub>m</sub>
-    </>
-  );
-};
-
-// Nice if we could find a font library with nice math symbols
-const NImp = () => {
-  return (
-    <>
-      <Text fontSize="1.5rem" as="span">
-        &rarr;
-      </Text>
-      <sub>n</sub>
-    </>
-  );
-};
+import {Ratio, MImp, NImp } from './rules.jsx'
 
 const Presets = () => {
   const dispatch = useDispatch();
@@ -200,23 +178,6 @@ const HypotheticalSyllogism = () => {
         </TableContainer>
       </Box>
     </VStack>
-  );
-};
-
-const Ratio = (a, b) => {
-  return (
-    <TableContainer display="inline">
-      <Table size="sm" variant="unstyled">
-        <Tbody>
-          <Tr>
-            <Td textAlign="center">{String(a)}</Td>
-          </Tr>
-          <Tr borderTopWidth={1} borderColor="black">
-            <Td textAlign="center">{String(b)}</Td>
-          </Tr>
-        </Tbody>
-      </Table>
-    </TableContainer>
   );
 };
 
