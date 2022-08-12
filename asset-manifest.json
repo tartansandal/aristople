@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/aristople/static/css/main.33a8128a.css",
-    "main.js": "/aristople/static/js/main.582951ca.js",
+    "main.js": "/aristople/static/js/main.d8f5b79c.js",
     "static/js/377.581f34f0.chunk.js": "/aristople/static/js/377.581f34f0.chunk.js",
     "index.html": "/aristople/index.html",
     "main.33a8128a.css.map": "/aristople/static/css/main.33a8128a.css.map",
-    "main.582951ca.js.map": "/aristople/static/js/main.582951ca.js.map",
+    "main.d8f5b79c.js.map": "/aristople/static/js/main.d8f5b79c.js.map",
     "377.581f34f0.chunk.js.map": "/aristople/static/js/377.581f34f0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.33a8128a.css",
-    "static/js/main.582951ca.js"
+    "static/js/main.d8f5b79c.js"
   ]
 }
