@@ -2,15 +2,9 @@ import React from 'react';
 
 import {
   Heading,
-  Text,
   Button,
   Box,
-  // HStack,
   VStack,
-  // Flex,
-  // Grid,
-  // SimpleGrid,
-  // Divider,
   Table,
   Tbody,
   Tr,

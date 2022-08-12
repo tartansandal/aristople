@@ -2,15 +2,9 @@ import React from 'react';
 
 import {
   Heading,
-  Text,
   Button,
   Box,
-  // HStack,
   VStack,
-  // Flex,
-  // Grid,
-  // SimpleGrid,
-  // Divider,
   Table,
   Tbody,
   Tr,
@@ -19,8 +13,6 @@ import {
   List,
   ListItem,
   ListIcon,
-  // OrderedList,
-  // UnorderedList,
 } from '@chakra-ui/react';
 
 import { ArrowLeftIcon } from '@chakra-ui/icons';
