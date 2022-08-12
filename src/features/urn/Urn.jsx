@@ -108,22 +108,22 @@ const Urn = () => {
       <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
         <SimpleGrid columns={2} spacingY={3} spacingX={10}>
           <MyLogSlider
-            title="Small and Wood"
+            title="Small &and; Wood"
             value={smallWoodValue}
             setter={updateSmallWoodValue}
           />
           <MyLogSlider
-            title="Large and Wood"
+            title="Large &and; Wood"
             value={largeWoodValue}
             setter={updateLargeWoodValue}
           />
           <MyLogSlider
-            title="Small and Metal"
+            title="Small &and; Metal"
             value={smallMetalValue}
             setter={updateSmallMetalValue}
           />
           <MyLogSlider
-            title="Large and Metal"
+            title="Large &and; Metal"
             value={largeMetalValue}
             setter={updateLargeMetalValue}
           />
