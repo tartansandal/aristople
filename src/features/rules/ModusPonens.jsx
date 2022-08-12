@@ -81,11 +81,11 @@ const ModusPonens = () => {
                 <Td>=</Td>
                 <Td verticalAlign="middle">{Ratio('N(metal)', 'N(total)')}</Td>
                 <Td>=</Td>
-                <Td className={styles.fixed}>
-                  {Ratio(metal, total)}
-                </Td>
+                <Td className={styles.fixed}>{Ratio(metal, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(metal / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {total > 0 ? (metal / total).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
               <Tr>
                 <Td>
@@ -102,7 +102,9 @@ const ModusPonens = () => {
                 <Td>{Ratio(total - metal + large_metal, total)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>
-                  {((total - metal + large_metal) / total).toFixed(4)}
+                  {total > 0
+                    ? ((total - metal + large_metal) / total).toFixed(4)
+                    : 'undefined'}
                 </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
@@ -112,7 +114,9 @@ const ModusPonens = () => {
                 <Td>=</Td>
                 <Td>{Ratio(large_metal, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(large_metal / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {total > 0 ? (large_metal / total).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
             </Tbody>
           </Table>
@@ -131,21 +135,24 @@ const ModusPonens = () => {
                 <Td>=</Td>
                 <Td verticalAlign="middle">{Ratio('N(metal)', 'N(total)')}</Td>
                 <Td>=</Td>
-                <Td className={styles.fixed}>{Ratio(metal, total)}
-                </Td>
+                <Td className={styles.fixed}>{Ratio(metal, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(metal / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {total > 0 ? (metal / total).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
               <Tr>
                 <Td>
-                  Pr(metal <MImp /> large and metal)
+                  Pr(metal <NImp /> large and metal)
                 </Td>
                 <Td>=</Td>
                 <Td>{Ratio('N(large and metal)', 'N(total)')}</Td>
                 <Td>=</Td>
                 <Td>{Ratio(large_metal, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(large_metal / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {total > 0 ? (large_metal / total).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
                 <Td>Pr(large and metal)</Td>
@@ -154,7 +161,9 @@ const ModusPonens = () => {
                 <Td>=</Td>
                 <Td>{Ratio(large_metal, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(large_metal / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {total > 0 ? (large_metal / total).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
             </Tbody>
           </Table>

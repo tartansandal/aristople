@@ -94,7 +94,9 @@ const HypotheticalSyllogism = () => {
                 </Td>
                 <Td>=</Td>
                 <Td isNumeric>
-                  {((total - wood + large_wood) / total).toFixed(4)}
+                  {total > 0
+                    ? ((total - wood + large_wood) / total).toFixed(4)
+                    : 'undefined'}
                 </Td>
               </Tr>
               <Tr>
@@ -112,7 +114,9 @@ const HypotheticalSyllogism = () => {
                 <Td>{Ratio(total - large + large_metal, total)}</Td>
                 <Td>=</Td>
                 <Td isNumeric>
-                  {((total - large + large_metal) / total).toFixed(4)}
+                  {total > 0
+                    ? ((total - large + large_metal) / total).toFixed(4)
+                    : 'undefined'}
                 </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
@@ -126,7 +130,11 @@ const HypotheticalSyllogism = () => {
                 <Td>=</Td>
                 <Td>{Ratio(total - wood + 0, total)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{((total - wood) / total).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {total > 0
+                    ? ((total - wood) / total).toFixed(4)
+                    : 'undefined'}
+                </Td>
               </Tr>
             </Tbody>
           </Table>
@@ -149,7 +157,9 @@ const HypotheticalSyllogism = () => {
                 <Td>=</Td>
                 <Td className={styles.fixed}>{Ratio(large_wood, wood)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(large_wood / wood).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {wood > 0 ? (large_wood / wood).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
               <Tr>
                 <Td>
@@ -160,7 +170,9 @@ const HypotheticalSyllogism = () => {
                 <Td>=</Td>
                 <Td>{Ratio(large_metal, large)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(large_metal / large).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {large > 0 ? (large_metal / large).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
                 <Td>
@@ -171,7 +183,9 @@ const HypotheticalSyllogism = () => {
                 <Td>=</Td>
                 <Td>{Ratio(0, wood)}</Td>
                 <Td>=</Td>
-                <Td isNumeric>{(0 / wood).toFixed(4)}</Td>
+                <Td isNumeric>
+                  {wood > 0 ? (0 / wood).toFixed(4) : 'undefined'}
+                </Td>
               </Tr>
             </Tbody>
           </Table>
