@@ -45,9 +45,8 @@ import { createSlice } from '@reduxjs/toolkit';
 export const MAX_IN_URN = 10000;
 
 const initialUrn = {
-
   // The current values being used for calculations
-  current : {
+  current: {
     total: 0,
 
     // Exclusive Materials
@@ -63,10 +62,12 @@ const initialUrn = {
     large_metal: 0,
     small_wood: 0,
     large_wood: 0,
+
+    // Don't put error or remainder in this dictionary
   },
 
   // Track a proposed change to current values
-  proposed : {
+  proposed: {
     total: 0,
 
     // Exclusive Materials
@@ -83,11 +84,11 @@ const initialUrn = {
     small_wood: 0,
     large_wood: 0,
 
-    error: false, // whether an error state is triggered
+    overflow: false,  // proposed change would overflow the urn
+    underflow: false, // proposed change would yeild negative counts
     remainder: 0, // the remainer that has to be distributed
   },
 };
-
 
 // Instead of importing all of lodash
 const sum = list => {
@@ -101,9 +102,10 @@ const share_value = (value, sizes) => {
   // Note: since apply_constraints() has been run, we can assume all the values
   // in the "sizes" list are non-negative at this point.
 
-  // FIXME: only do this if at least one number is zero
-  // Nudge all sizes up so that zeros don't get too sticky
-  sizes = sizes.map(x => x + 1);
+  if (sizes.includes(0)) {
+    // Nudge all sizes up so that zeros don't get too sticky
+    sizes = sizes.map(x => x + 1);
+  }
   let total = sum(sizes);
 
   // Split "value" according to ratios of the "sizes" to the total
@@ -119,40 +121,22 @@ const share_value = (value, sizes) => {
 
   // This should not be possible, but lets trap and adjust in case of bugs
   if (Math.abs(remainder) > sizes.length) {
-    console.error(
-      'Got an impossible value for remainder: ignoring value change'
-    );
+    console.error('Got an impossible value for remainder: ignoring change');
     console.debug({ value }, { total }, { remainder });
     console.debug({ sizes }, { parts });
     return [0, 0, 0, 0];
   }
 
-  let loops = 0;
-  while (remainder !== 0) {
-    loops++;
-    // Trap infinite loops in case of (future) bugs
-    if (loops > 20) {
-      console.error(
-        'Breaking from potential infinite loop ' +
-          'while attempting to assign remainder'
-      );
-      console.debug({ value }, { total }, { remainder });
-      console.debug({ sizes }, { parts });
-      break;
-    }
+  for (let loop = Math.abs(remainder); loop > 0; loop--) {
     // Pick a random index
     // FIXME: we should pick based on the distribution of sizes not a flat
     // random distribution.
     let index = Math.floor(Math.random() * parts.length);
     if (remainder > 0) {
       parts[index]++;
-      remainder--;
-      continue;
     }
     if (remainder < 0) {
       parts[index]--;
-      remainder++;
-      continue;
     }
   }
 
@@ -162,10 +146,10 @@ const share_value = (value, sizes) => {
   if (total !== value) {
     console.error('Sharing value is out by ', total - value);
   }
-  return parts;
+  return [parts, remainder];
 };
 
-const apply_constraints = ( current, proposed ) => {
+const apply_constraints = (current, proposed) => {
   // Ensure our changes will result in a consistent state that reflects out
   // underlying constraints. For this we take the values for the "Combinations"
   // set as our base and let the results bubble up to the other sets and the
@@ -175,7 +159,8 @@ const apply_constraints = ( current, proposed ) => {
   // out of sync, we'll be defensive and allow for some potential crazy values
   // and adjust the results accordingly.
 
-  proposed.error = false;
+  proposed.overflow = false;
+  proposed.underflow = false;
 
   const combination_keys = [
     'small_wood',
@@ -187,8 +172,8 @@ const apply_constraints = ( current, proposed ) => {
   // Ensure all the combination values are non-negative
   for (let key of combination_keys) {
     if (proposed[key] < 0) {
-      console.debug(`Got a negative value for ${key}`);
       proposed[key] = 0;
+      proposed.underflow = true;
     }
   }
   // NB: The above also implies the total is not negative
@@ -204,11 +189,16 @@ const apply_constraints = ( current, proposed ) => {
   proposed.total = sum(combination_keys.map(k => proposed[k]));
 
   // Ensure we don't sum higher than the max that fits in the urn
-  if (proposed.total > MAX_IN_URN || proposed.total < 0) {
-    proposed.error = true;
+  if (proposed.total > MAX_IN_URN) {
+    proposed.overflow = true;
+    // revert the proposed changes
+    for (let key in current) {
+      proposed[key] = current[key];
+    }
     return; // abort this attempted modification
   }
 
+  // propagate the proposed changes to current
   for (let key in current) {
     current[key] = proposed[key];
   }
@@ -227,10 +217,13 @@ export const urnSlice = createSlice({
       if (change === 0 || isNaN(change)) return;
 
       const [
-        small_wood_change,
-        large_wood_change,
-        small_metal_change,
-        large_metal_change,
+        [
+          small_wood_change,
+          large_wood_change,
+          small_metal_change,
+          large_metal_change,
+        ],
+        remainder,
       ] = share_value(change, [
         current.small_wood,
         current.large_wood,
@@ -243,6 +236,8 @@ export const urnSlice = createSlice({
       proposed.small_metal += small_metal_change;
       proposed.large_metal += large_metal_change;
 
+      proposed.remainder = remainder;
+
       apply_constraints(current, proposed);
     },
 
@@ -254,13 +249,15 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [small_wood_change, large_wood_change] = share_value(change, [
-        current.small_wood,
-        current.large_wood,
-      ]);
+      const [[small_wood_change, large_wood_change], remainder] = share_value(
+        change,
+        [current.small_wood, current.large_wood]
+      );
 
       proposed.small_wood += small_wood_change;
       proposed.large_wood += large_wood_change;
+
+      proposed.remainder = remainder;
 
       apply_constraints(current, proposed);
     },
@@ -273,13 +270,17 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [small_metal_change, large_metal_change] = share_value(change, [
-        current.small_metal,
-        current.large_metal,
-      ]);
+      const [[small_metal_change, large_metal_change], remainder] = share_value(
+        change,
+        [current.small_metal, current.large_metal]
+      );
+
+      proposed.remainder = remainder;
 
       proposed.small_metal += small_metal_change;
       proposed.large_metal += large_metal_change;
+
+      proposed.remainder = remainder;
 
       apply_constraints(current, proposed);
     },
@@ -292,13 +293,15 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [small_wood_change, small_metal_change] = share_value(change, [
-        current.small_wood,
-        current.small_metal,
-      ]);
+      const [[small_wood_change, small_metal_change], remainder] = share_value(
+        change,
+        [current.small_wood, current.small_metal]
+      );
 
       proposed.small_wood += small_wood_change;
       proposed.small_metal += small_metal_change;
+
+      proposed.remainder = remainder;
 
       apply_constraints(current, proposed);
     },
@@ -311,13 +314,15 @@ export const urnSlice = createSlice({
 
       if (change === 0 || isNaN(change)) return;
 
-      const [large_wood_change, large_metal_change] = share_value(change, [
-        current.large_wood,
-        current.large_metal,
-      ]);
+      const [[large_wood_change, large_metal_change], remainder] = share_value(
+        change,
+        [current.large_wood, current.large_metal]
+      );
 
       proposed.large_metal += large_metal_change;
       proposed.large_wood += large_wood_change;
+
+      proposed.remainder = remainder;
 
       apply_constraints(current, proposed);
     },
@@ -383,6 +388,15 @@ export const urnSlice = createSlice({
 
       apply_constraints(current, proposed);
     },
+
+    resetErrors: state => {
+      state.proposed.overflow = false;
+      state.proposed.underflow = false;
+    },
+
+    resetRemainder: state => {
+      state.proposed.remainder = 0;
+    },
   },
 });
 
@@ -397,6 +411,8 @@ export const {
   updateSmallWood,
   updateLargeWood,
   updateAll,
+  resetErrors,
+  resetRemainder,
 } = urnSlice.actions;
 
 export default urnSlice.reducer;

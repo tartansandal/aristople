@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LogSlider from '../../components/LogSlider';
 
 import {
@@ -7,7 +7,7 @@ import {
   Text,
   SimpleGrid,
   Heading,
-  // Box,
+  useToast,
 } from '@chakra-ui/react';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,6 +22,8 @@ import {
   updateLargeMetal,
   updateSmallWood,
   updateLargeWood,
+  resetErrors,
+  resetRemainder,
 } from './urnSlice';
 
 // Factor out setting "maxValue" and "steps"
@@ -61,6 +63,54 @@ const Urn = () => {
   const updateLargeWoodValue = v => dispatch(updateLargeWood(v));
   const updateSmallMetalValue = v => dispatch(updateSmallMetal(v));
   const updateLargeMetalValue = v => dispatch(updateLargeMetal(v));
+
+  const overflow = useSelector(state => state.urn.proposed.overflow);
+  const underflow = useSelector(state => state.urn.proposed.underflow);
+  const remainder = useSelector(state => state.urn.proposed.remainder);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (overflow) {
+      toast({
+        title: 'Overflow',
+        description: 'Attempted change would overflow the Urn',
+        status: 'error',
+        variant: 'top-accent',
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch(resetErrors());
+    }
+  }, [overflow, dispatch, toast]);
+
+  useEffect(() => {
+    if (underflow) {
+      toast({
+        title: 'Underflow',
+        description: 'Limiting a change that would underflow the Urn',
+        status: 'info',
+        variant: 'top-accent',
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch(resetErrors());
+    }
+  }, [underflow, dispatch, toast]);
+
+  useEffect(() => {
+    if (remainder > 0) {
+      toast({
+        title: 'Remainder',
+        description: `Could not maintain exact ratios. Assigning ${remainder} ball(s) randomly`,
+        status: 'warning',
+        variant: 'top-accent',
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch(resetRemainder());
+    }
+  }, [remainder, dispatch, toast]);
 
   return (
     <VStack spacing={5}>
