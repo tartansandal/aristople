@@ -6,7 +6,6 @@ import {
   VStack,
   Text,
   SimpleGrid,
-  Heading,
   useToast,
 } from '@chakra-ui/react';
 
@@ -102,7 +101,9 @@ const Urn = () => {
     if (remainder > 0) {
       toast({
         title: 'Remainder',
-        description: `Could not maintain exact ratios. Assigning ${remainder} ball(s) randomly`,
+        description: `
+          Could not maintain exact ratios. 
+          Assigning ${remainder} ball(s) randomly`,
         status: 'warning',
         variant: 'top-accent',
         duration: 3000,
@@ -114,13 +115,15 @@ const Urn = () => {
 
   return (
     <VStack spacing={5}>
-      <Heading m={3}>The Urn</Heading>
-      <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
-        <MyLogSlider
-          title="Total"
-          value={totalValue}
-          setter={updateTotalValue}
-        />
+      <VStack>
+        <Text mt={3}>The Urn</Text>
+        <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
+          <MyLogSlider
+            title="Total"
+            value={totalValue}
+            setter={updateTotalValue}
+          />
+        </VStack>
       </VStack>
       <HStack>
         <VStack>

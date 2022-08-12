@@ -7,7 +7,16 @@ import {
   Tr,
   Td,
   TableContainer,
+  Box,
+  Heading,
+  Button,
+  List,
+  ListItem,
+  ListIcon,
 } from '@chakra-ui/react';
+import { ArrowRightIcon } from '@chakra-ui/icons';
+import { useDispatch } from 'react-redux';
+import { updateAll } from '../urn/urnSlice';
 
 export const MImp = () => {
   return (
@@ -56,5 +65,41 @@ export const Ratio = (a, b) => {
         </Tbody>
       </Table>
     </TableContainer>
+  );
+};
+
+export const Presets = ({ sets }) => {
+  const dispatch = useDispatch();
+
+  const buttons = sets.map(set => {
+    return (
+      <ListItem>
+        <Button
+          size="sm"
+          onClick={() =>
+            dispatch(
+              updateAll({
+                small_wood: set[0],
+                large_wood: set[1],
+                small_metal: set[2],
+                large_metal: set[3],
+              })
+            )
+          }
+        >
+          {set.join(', ')}
+        </Button>
+        <ListIcon as={ArrowRightIcon} color="green.500" />
+      </ListItem>
+    );
+  });
+
+  return (
+    <Box>
+      <Heading size="md" align="center">
+        Presets
+      </Heading>
+      <List spacing={3}>{buttons}</List>
+    </Box>
   );
 };

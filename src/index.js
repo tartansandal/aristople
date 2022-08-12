@@ -4,8 +4,11 @@ import * as ReactDOM from 'react-dom/client';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
-import { Provider } from 'react-redux'
-import store from './components/Store'
+import { Provider } from 'react-redux';
+import store from './components/Store';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ModusPonens from './features/rules/ModusPonens';
+import HypotheticalSyllogism from './features/rules/HypotheticalSyllogism';
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
@@ -14,7 +17,17 @@ root.render(
   <StrictMode>
     <ColorModeScript />
     <Provider store={store}>
-      <App />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/aristople" element={<App />}>
+            <Route
+              path="hypothetical-syllogism"
+              element={<HypotheticalSyllogism />}
+            />
+            <Route path="modus-ponens" element={<ModusPonens />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </Provider>
   </StrictMode>
 );

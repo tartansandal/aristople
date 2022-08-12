@@ -2,54 +2,20 @@ import React from 'react';
 
 import {
   Heading,
-  Button,
   Box,
   VStack,
+  HStack,
+  Spacer,
   Table,
   Tbody,
   Tr,
   Td,
   TableContainer,
-  List,
-  ListItem,
-  ListIcon,
-  // OrderedList,
-  // UnorderedList,
 } from '@chakra-ui/react';
 
-import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateAll } from '../urn/urnSlice';
+import { useSelector } from 'react-redux';
 import styles from './rules.module.css';
-import {Ratio, MImp, NImp } from './rules.jsx'
-
-const Presets = () => {
-  const dispatch = useDispatch();
-
-  return (
-    <Box>
-      <List spacing={3}>
-        <ListItem>
-          <ListIcon as={ArrowLeftIcon} color="green.500" />
-          <Button
-            onClick={() =>
-              dispatch(
-                updateAll({
-                  small_wood: 0,
-                  large_wood: 10,
-                  small_metal: 1,
-                  large_metal: 989,
-                })
-              )
-            }
-          >
-            Preset: 0, 10, 1, 989
-          </Button>
-        </ListItem>
-      </List>
-    </Box>
-  );
-};
+import { Ratio, MImp, NImp, Presets } from './rules.jsx';
 
 const HypotheticalSyllogism = () => {
   const current = useSelector(state => state.urn.current);
@@ -64,9 +30,11 @@ const HypotheticalSyllogism = () => {
 
   return (
     <VStack spacing={50} alignItems="flex-start" justifyContent="space-between">
-      <Heading>Hypothetical Syllogism</Heading>
-
-      <Presets />
+      <HStack w="100%" spacing={5}>
+        <Heading>Hypothetical Syllogism</Heading>
+        <Spacer />
+        <Presets sets={[[0, 10, 1, 989]]}/>
+      </HStack>
       <Box>
         <Heading align="left" size="md" mb={5} color="blue.700">
           Material Conditional
