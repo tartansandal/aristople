@@ -4,8 +4,6 @@ import {
   Heading,
   Box,
   VStack,
-  HStack,
-  Spacer,
   Table,
   Tbody,
   Tr,
@@ -30,11 +28,7 @@ const HypotheticalSyllogism = () => {
 
   return (
     <VStack spacing={50} alignItems="flex-start" justifyContent="space-between">
-      <HStack w="100%" spacing={5}>
-        <Heading>Hypothetical Syllogism</Heading>
-        <Spacer />
-        <Presets sets={[[0, 10, 1, 989]]}/>
-      </HStack>
+      <Heading>Hypothetical Syllogism</Heading>
       <Box>
         <Heading align="left" size="md" mb={5} color="blue.700">
           Material Conditional
@@ -153,6 +147,7 @@ const HypotheticalSyllogism = () => {
           </Table>
         </TableContainer>
       </Box>
+      <Presets sets={[[0, 10, 1, 989]]}/>
     </VStack>
   );
 };

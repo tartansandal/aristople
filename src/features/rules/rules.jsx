@@ -7,12 +7,12 @@ import {
   Tr,
   Td,
   TableContainer,
-  Box,
+  Flex,
+  VStack,
   Heading,
   Button,
   List,
   ListItem,
-  ListIcon,
 } from '@chakra-ui/react';
 import { ArrowRightIcon } from '@chakra-ui/icons';
 import { useDispatch } from 'react-redux';
@@ -76,6 +76,7 @@ export const Presets = ({ sets }) => {
       <ListItem key={set.join('_')}>
         <Button
           size="sm"
+          rightIcon={<ArrowRightIcon/>}
           onClick={() =>
             dispatch(
               updateAll({
@@ -89,17 +90,18 @@ export const Presets = ({ sets }) => {
         >
           {set.join(', ')}
         </Button>
-        <ListIcon as={ArrowRightIcon} color="green.500" />
       </ListItem>
     );
   });
 
   return (
-    <Box>
+    <Flex w="100%" justify="end">
+    <VStack>
       <Heading size="md" align="center">
         Presets
       </Heading>
       <List spacing={3}>{buttons}</List>
-    </Box>
+    </VStack>
+    </Flex>
   );
 };

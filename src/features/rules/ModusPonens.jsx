@@ -4,8 +4,6 @@ import {
   Heading,
   Box,
   VStack,
-  HStack,
-  Spacer,
   Table,
   Tbody,
   Tr,
@@ -26,11 +24,7 @@ const ModusPonens = () => {
 
   return (
     <VStack spacing={50} alignItems="flex-start" justifyContent="space-between">
-      <HStack w="100%" spacing={5}>
-        <Heading>Modus Ponens</Heading>
-        <Spacer />
-        <Presets sets={[[0, 10, 1, 989]]} />
-      </HStack>
+      <Heading>Modus Ponens</Heading>
       <Box>
         <Heading align="left" size="md" mb={5} color="blue.700">
           Material Conditional
@@ -131,6 +125,7 @@ const ModusPonens = () => {
           </Table>
         </TableContainer>
       </Box>
+      <Presets sets={[[0, 10, 1, 989]]} />
     </VStack>
   );
 };
