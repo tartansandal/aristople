@@ -32,7 +32,7 @@ function App() {
             "footer footer footer"
           `}
           gridTemplateRows={'50px 1fr 30px'}
-          gridTemplateColumns={'200px 1fr 760px'}
+          gridTemplateColumns={'220px 1fr 760px'}
           minH="100vh"
           gap="2"
         >

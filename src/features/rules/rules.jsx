@@ -73,7 +73,7 @@ export const Presets = ({ sets }) => {
 
   const buttons = sets.map(set => {
     return (
-      <ListItem>
+      <ListItem key={set.join('_')}>
         <Button
           size="sm"
           onClick={() =>
