@@ -117,7 +117,7 @@ const Urn = () => {
     <VStack spacing={5}>
       <VStack>
         <Text mt={3}>The Urn</Text>
-        <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
+        <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
           <MyLogSlider
             title="Total"
             value={totalValue}
@@ -125,10 +125,9 @@ const Urn = () => {
           />
         </VStack>
       </VStack>
-      <HStack>
         <VStack>
           <Text>Material</Text>
-          <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
+          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
             <MyLogSlider
               title="Wood"
               value={woodValue}
@@ -143,7 +142,7 @@ const Urn = () => {
         </VStack>
         <VStack>
           <Text>Size</Text>
-          <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
+          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
             <MyLogSlider
               title="Small"
               value={smallValue}
@@ -156,10 +155,8 @@ const Urn = () => {
             />
           </VStack>
         </VStack>
-      </HStack>
       <Text>Combinations</Text>
-      <VStack spacing={2} p={3} pr={6} borderWidth="1px" borderRadius="lg">
-        <SimpleGrid columns={2} spacingY={3} spacingX={10}>
+      <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
           <MyLogSlider
             title="Small &and; Wood"
             value={smallWoodValue}
@@ -180,7 +177,6 @@ const Urn = () => {
             value={largeMetalValue}
             setter={updateLargeMetalValue}
           />
-        </SimpleGrid>
       </VStack>
     </VStack>
   );
