@@ -38,7 +38,8 @@ function App() {
         >
           <GridItem  area={'header'} pl="2" bg="blue.100">
             <Flex>
-              <Heading> The Urn of Aristople</Heading>
+              <Spacer />
+              <Heading>Aristople</Heading>
               <Spacer />
               <ColorModeSwitcher />
             </Flex>

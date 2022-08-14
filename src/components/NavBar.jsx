@@ -5,23 +5,27 @@ import {
   ListItem,
   // ListIcon,
   Link,
-  Heading,
+  // Heading,
   VStack,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
 const NavBar = () => {
   return (
-    <VStack align="start">
-      <Heading>Rules</Heading>
+    <VStack pt={3} align="start">
       <List align="start">
         <ListItem>
-          <Link as={RouterLink} to="/aristople/hypothetical-syllogism">
+          <Link as={RouterLink} to="introduction">
+            Introduction
+          </Link>
+        </ListItem>
+        <ListItem>
+          <Link as={RouterLink} to="hypothetical-syllogism">
             Hypothetical Sylogism
           </Link>
         </ListItem>
         <ListItem>
-          <Link as={RouterLink} to="/aristople/modus-ponens">
+          <Link as={RouterLink} to="modus-ponens">
             Modus Ponens
           </Link>
         </ListItem>
