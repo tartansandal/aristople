@@ -7,7 +7,6 @@ import {
   // SliderMark,
   Tooltip,
   HStack,
-  VStack,
   FormLabel,
   NumberInput,
   NumberInputField,

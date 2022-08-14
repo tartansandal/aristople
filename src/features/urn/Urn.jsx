@@ -2,10 +2,8 @@ import React, { useEffect } from 'react';
 import LogSlider from '../../components/LogSlider';
 
 import {
-  HStack,
   VStack,
   Text,
-  SimpleGrid,
   useToast,
 } from '@chakra-ui/react';
 
