@@ -17,22 +17,22 @@ import {
 
 const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
   // cache an expensive calculation
-  const logOfMaxPlus1 = Math.log(maxValue + 1);
+  const scale = steps / Math.log1p(maxValue/steps);
 
   const log = useCallback(
     (val) => {
       // inverse of our custom exp function
-      return Math.round((steps * Math.log1p(val)) / logOfMaxPlus1);
+      return Math.round(scale*(Math.log1p(val/steps)));
     },
-    [steps, logOfMaxPlus1],
+    [steps, scale],
   );
 
   const exp = useCallback(
     (val) => {
       // inverse of or custom log function
-      return Math.round(Math.exp((val * logOfMaxPlus1) / steps)) - 1;
+      return Math.round(steps*Math.expm1((val/scale)));
     },
-    [steps, logOfMaxPlus1],
+    [steps, scale],
   );
 
   const [showTooltip, setShowTooltip] = useState(false);
