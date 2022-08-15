@@ -1,3 +1,9 @@
 .propTable td.fixed {
-  min-width: 7rem;
+  min-width: 4rem;
+}
+
+.propTable th,
+.propTable td {
+  padding-left: 5px;
+  padding-right: 5px;
 }
