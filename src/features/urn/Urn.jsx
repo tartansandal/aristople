@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react';
 import LogSlider from '../../components/LogSlider';
 
-import {
-  VStack,
-  Text,
-  useToast,
-} from '@chakra-ui/react';
+import { VStack, Text, useToast } from '@chakra-ui/react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -112,7 +108,7 @@ const Urn = () => {
   }, [remainder, dispatch, toast]);
 
   return (
-    <VStack spacing={5}>
+    <VStack spacing={5} align="start" ml={5}>
       <VStack>
         <Text mt={3}>The Urn</Text>
         <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
@@ -123,38 +119,39 @@ const Urn = () => {
           />
         </VStack>
       </VStack>
-        <VStack>
-          <Text>Material</Text>
-          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
-            <MyLogSlider
-              title="Wood"
-              value={woodValue}
-              setter={updateWoodValue}
-            />
-            <MyLogSlider
-              title="Metal"
-              value={metalValue}
-              setter={updateMetalValue}
-            />
-          </VStack>
+      <VStack>
+        <Text>Material</Text>
+        <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+          <MyLogSlider
+            title="Wood"
+            value={woodValue}
+            setter={updateWoodValue}
+          />
+          <MyLogSlider
+            title="Metal"
+            value={metalValue}
+            setter={updateMetalValue}
+          />
         </VStack>
-        <VStack>
-          <Text>Size</Text>
-          <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
-            <MyLogSlider
-              title="Small"
-              value={smallValue}
-              setter={updateSmallValue}
-            />
-            <MyLogSlider
-              title="Large"
-              value={largeValue}
-              setter={updateLargeValue}
-            />
-          </VStack>
+      </VStack>
+      <VStack>
+        <Text>Size</Text>
+        <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+          <MyLogSlider
+            title="Small"
+            value={smallValue}
+            setter={updateSmallValue}
+          />
+          <MyLogSlider
+            title="Large"
+            value={largeValue}
+            setter={updateLargeValue}
+          />
         </VStack>
-      <Text>Combinations</Text>
-      <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
+      </VStack>
+      <VStack>
+        <Text>Combinations</Text>
+        <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
           <MyLogSlider
             title="Small &and; Wood"
             value={smallWoodValue}
@@ -175,6 +172,7 @@ const Urn = () => {
             value={largeMetalValue}
             setter={updateLargeMetalValue}
           />
+        </VStack>
       </VStack>
     </VStack>
   );

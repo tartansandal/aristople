@@ -55,8 +55,8 @@ const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
   };
 
   return (
-      <HStack >
-        <FormLabel mb={0}>{title}</FormLabel>
+      <HStack spacing={5} >
+        <FormLabel m={0}>{title}</FormLabel>
         <NumberInput
           size="sm"
           maxW="100px"
