@@ -11,6 +11,7 @@ import AppRoutes from './components/AppRoutes.jsx';
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
+// Using a hash router since we deploy to github pages
 root.render(
   <StrictMode>
     <ColorModeScript />
