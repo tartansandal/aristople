@@ -108,7 +108,7 @@ const Urn = () => {
   }, [remainder, dispatch, toast]);
 
   return (
-    <VStack spacing={5} align="start" ml={5}>
+    <VStack spacing={5} ml={3}>
       <VStack>
         <Text mt={3}>The Urn</Text>
         <VStack spacing={2} p={3} borderWidth="1px" borderRadius="lg">
