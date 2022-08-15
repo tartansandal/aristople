@@ -147,7 +147,7 @@ const ModusPonens = () => {
           </Table>
         </TableContainer>
       </Box>
-      <Presets sets={[[0, 10, 1, 989]]} />
+      <Presets sets={[[0, 1, 1, 3]]} />
     </VStack>
   );
 };

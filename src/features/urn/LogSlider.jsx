@@ -19,20 +19,18 @@ const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
   // cache an expensive calculation
   const logOfMaxPlus1 = Math.log(maxValue + 1);
 
-  // inverse of or custom log function
-  const exp = val => {
-    let result = Math.round(Math.exp((val * logOfMaxPlus1) / steps)) - 1;
-    return result;
-  };
-  // inverse of our custom exp function
-  const log = val => {
-    return Math.round((steps * Math.log1p(val)) / logOfMaxPlus1);
-  };
-
-  // a memoized version for use in useEffect
-  const memoizedLog = useCallback(
+  const log = useCallback(
     (val) => {
+      // inverse of our custom exp function
       return Math.round((steps * Math.log1p(val)) / logOfMaxPlus1);
+    },
+    [steps, logOfMaxPlus1],
+  );
+
+  const exp = useCallback(
+    (val) => {
+      // inverse of or custom log function
+      return Math.round(Math.exp((val * logOfMaxPlus1) / steps)) - 1;
     },
     [steps, logOfMaxPlus1],
   );
@@ -40,19 +38,11 @@ const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [sliderValue, setSliderValue] = useState(log(value));
 
-  // so adjacent sliders updatewiehn the state changes
+  // so adjacent sliders update when the state changes
   useEffect( () => {
-    setSliderValue(memoizedLog(value));
-    }, [value, memoizedLog]
+    setSliderValue(log(value));
+    }, [value, log]
   );
-
-  const onSliderChangeEnd = (v) => {
-    const new_value = exp(v);
-    setter(new_value);
-    if (value !== new_value) {
-      setSliderValue(memoizedLog(value))
-    }
-  };
 
   return (
       <HStack spacing={5} >
@@ -80,7 +70,7 @@ const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
           max={steps}
           value={sliderValue}
           onChange={v => setSliderValue(v)}
-          onChangeEnd={onSliderChangeEnd}
+          onChangeEnd={v => setter(exp(v))}
 
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}

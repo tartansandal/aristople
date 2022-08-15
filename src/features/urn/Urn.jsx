@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import LogSlider from '../../components/LogSlider';
-
 import { VStack, Text, useToast } from '@chakra-ui/react';
-
 import { useSelector, useDispatch } from 'react-redux';
+
+import LogSlider from './LogSlider';
+
 import {
   MAX_IN_URN,
   updateTotal,
