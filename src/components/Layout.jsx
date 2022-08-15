@@ -21,7 +21,7 @@ import ColorModeSwitcher from './ColorModeSwitcher';
 import NavBar from './NavBar';
 import Urn from '../features/urn/Urn';
 
-function App() {
+function Layout() {
   return (
     <ChakraProvider theme={theme}>
       <Box textAlign="center" fontSize="md">
@@ -64,4 +64,4 @@ function App() {
   );
 }
 
-export default App;
+export default Layout;

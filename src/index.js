@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import store from './components/Store';
 import { HashRouter } from 'react-router-dom';
-import AppRoutes from './components/AppRoutes.jsx';
+import App from './components/App.jsx';
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
@@ -17,8 +17,7 @@ root.render(
     <ColorModeScript />
     <Provider store={store}>
       <HashRouter>
-        <AppRoutes>
-        </AppRoutes>
+        <App />
       </HashRouter>
     </Provider>
   </StrictMode>
