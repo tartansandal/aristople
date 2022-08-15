@@ -13,7 +13,7 @@ import {
 
 import { useSelector } from 'react-redux';
 import styles from './rules.module.css';
-import { Ratio, MImp, NImp, Presets } from './rules.jsx';
+import { Ratio, MImp, NImp, LAND, AND, Presets } from './rules.jsx';
 
 const ModusPonens = () => {
   const current = useSelector(state => state.urn.current);
@@ -35,9 +35,13 @@ const ModusPonens = () => {
               <Tr>
                 <Td>Pr(metal)</Td>
                 <Td>=</Td>
-                <Td verticalAlign="middle">{Ratio('N(metal)', 'N(total)')}</Td>
+                <Td verticalAlign="middle">
+                  <Ratio top={'N(metal)'} bottom={'N(total)'} />
+                </Td>
                 <Td>=</Td>
-                <Td className={styles.fixed}>{Ratio(metal, total)}</Td>
+                <Td className={styles.fixed}>
+                  <Ratio top={metal} bottom={total} />
+                </Td>
                 <Td>=</Td>
                 <Td isNumeric>
                   {total > 0 ? (metal / total).toFixed(4) : 'undefined'}
@@ -45,17 +49,19 @@ const ModusPonens = () => {
               </Tr>
               <Tr>
                 <Td>
-                  Pr(metal <MImp /> large and metal)
+                  Pr(metal <MImp /> large <LAND/> metal)
                 </Td>
                 <Td>=</Td>
                 <Td>
-                  {Ratio(
-                    'N(total) - N(metal) + N(large and metal)',
-                    'N(total)'
-                  )}
+                  <Ratio
+                    top={`N(total) - N(metal) + N(large ${AND} metal)`}
+                    bottom={'N(total)'}
+                  />
                 </Td>
                 <Td>=</Td>
-                <Td>{Ratio(total - metal + large_metal, total)}</Td>
+                <Td>
+                  <Ratio top={total - metal + large_metal} bottom={total} />
+                </Td>
                 <Td>=</Td>
                 <Td isNumeric>
                   {total > 0
@@ -64,11 +70,15 @@ const ModusPonens = () => {
                 </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
-                <Td>Pr(large and metal)</Td>
+                <Td>Pr(large <LAND /> metal)</Td>
                 <Td>=</Td>
-                <Td>{Ratio('N(large and metal)', 'N(total)')}</Td>
+                <Td>
+                  <Ratio top={`N(large ${AND} metal)`} bottom={'N(total)'} />
+                </Td>
                 <Td>=</Td>
-                <Td>{Ratio(large_metal, total)}</Td>
+                <Td>
+                  <Ratio top={large_metal} bottom={total} />
+                </Td>
                 <Td>=</Td>
                 <Td isNumeric>
                   {total > 0 ? (large_metal / total).toFixed(4) : 'undefined'}
@@ -89,9 +99,13 @@ const ModusPonens = () => {
               <Tr>
                 <Td>Pr(metal)</Td>
                 <Td>=</Td>
-                <Td verticalAlign="middle">{Ratio('N(metal)', 'N(total)')}</Td>
+                <Td verticalAlign="middle">
+                  <Ratio top={'N(metal)'} bottom={'N(total)'} />
+                </Td>
                 <Td>=</Td>
-                <Td className={styles.fixed}>{Ratio(metal, total)}</Td>
+                <Td className={styles.fixed}>
+                  <Ratio top={metal} bottom={total} />
+                </Td>
                 <Td>=</Td>
                 <Td isNumeric>
                   {total > 0 ? (metal / total).toFixed(4) : 'undefined'}
@@ -99,23 +113,31 @@ const ModusPonens = () => {
               </Tr>
               <Tr>
                 <Td>
-                  Pr(metal <NImp /> large and metal)
+                  Pr(metal <NImp /> large <LAND/> metal)
                 </Td>
                 <Td>=</Td>
-                <Td>{Ratio('N(large and metal)', 'N(total)')}</Td>
+                <Td>
+                  <Ratio top={`N(large ${AND} metal)`} bottom={'N(total)'} />
+                </Td>
                 <Td>=</Td>
-                <Td>{Ratio(large_metal, total)}</Td>
+                <Td>
+                  <Ratio top={large_metal} bottom={total} />
+                </Td>
                 <Td>=</Td>
                 <Td isNumeric>
                   {total > 0 ? (large_metal / total).toFixed(4) : 'undefined'}
                 </Td>
               </Tr>
               <Tr borderTopWidth={2} borderColor="gray.600">
-                <Td>Pr(large and metal)</Td>
+                <Td>Pr(large <LAND /> metal)</Td>
                 <Td>=</Td>
-                <Td>{Ratio('N(large and metal)', 'N(total)')}</Td>
+                <Td>
+                  <Ratio top={`N(large ${AND} metal)`} bottom={'N(total)'} />
+                </Td>
                 <Td>=</Td>
-                <Td>{Ratio(large_metal, total)}</Td>
+                <Td>
+                  <Ratio top={large_metal} bottom={total} />
+                </Td>
                 <Td>=</Td>
                 <Td isNumeric>
                   {total > 0 ? (large_metal / total).toFixed(4) : 'undefined'}

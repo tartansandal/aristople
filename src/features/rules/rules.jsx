@@ -18,6 +18,9 @@ import { ArrowRightIcon } from '@chakra-ui/icons';
 import { useDispatch } from 'react-redux';
 import { updateAll } from '../urn/urnSlice';
 
+export const AND = '\u2227';
+export const LAND = () => { return (<>&and;</>); };
+
 export const MImp = () => {
   return (
     <>
@@ -41,26 +44,19 @@ export const NImp = () => {
   );
 };
 
-export const And = () => {
-  return (
-    <Text fontSize="1.5rem" as="span">
-      &and;
-    </Text>
-  );
-};
 
-export const Ratio = (a, b) => {
+export const Ratio = ({top, bottom}) => {
   return (
     <TableContainer display="inline" align="center">
       <Table size="sm" variant="unstyled" maxW="fit-content">
         <Tbody>
           <Tr>
             <Td px={1} textAlign="center">
-              {String(a)}
+              {String(top)}
             </Td>
           </Tr>
           <Tr borderTopWidth={1} borderColor="black">
-            <Td textAlign="center">{String(b)}</Td>
+            <Td textAlign="center">{String(bottom)}</Td>
           </Tr>
         </Tbody>
       </Table>
