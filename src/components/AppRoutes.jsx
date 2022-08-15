@@ -9,7 +9,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<App />}>
-        <Route path="introduction" element={<Intro />} />
+        <Route index element={<Intro />} />
         <Route
           path="hypothetical-syllogism"
           element={<HypotheticalSyllogism />}
