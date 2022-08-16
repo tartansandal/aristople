@@ -13,13 +13,16 @@ import {
   Button,
   List,
   ListItem,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { ArrowRightIcon } from '@chakra-ui/icons';
 import { useDispatch } from 'react-redux';
 import { updateAll } from '../urn/urnSlice';
 
 export const AND = '\u2227';
-export const LAND = () => { return (<>&and;</>); };
+export const LAND = () => {
+  return <>&and;</>;
+};
 
 export const MImp = () => {
   return (
@@ -44,8 +47,8 @@ export const NImp = () => {
   );
 };
 
-
-export const Ratio = ({top, bottom}) => {
+export const Ratio = ({ top, bottom }) => {
+  const color = useColorModeValue('black', 'white');
   return (
     <TableContainer display="inline" align="center">
       <Table size="sm" variant="unstyled" maxW="fit-content">
@@ -55,7 +58,7 @@ export const Ratio = ({top, bottom}) => {
               {String(top)}
             </Td>
           </Tr>
-          <Tr borderTopWidth={1} borderColor="black">
+          <Tr borderTopWidth={1} borderColor={color}>
             <Td textAlign="center">{String(bottom)}</Td>
           </Tr>
         </Tbody>
@@ -72,7 +75,7 @@ export const Presets = ({ sets }) => {
       <ListItem key={set.join('_')}>
         <Button
           size="sm"
-          rightIcon={<ArrowRightIcon/>}
+          rightIcon={<ArrowRightIcon />}
           onClick={() =>
             dispatch(
               updateAll({
@@ -92,12 +95,12 @@ export const Presets = ({ sets }) => {
 
   return (
     <Flex w="100%" justify="end">
-    <VStack>
-      <Heading size="md" align="center">
-        Presets
-      </Heading>
-      <List spacing={3}>{buttons}</List>
-    </VStack>
+      <VStack>
+        <Heading size="md" align="center">
+          Presets
+        </Heading>
+        <List spacing={3}>{buttons}</List>
+      </VStack>
     </Flex>
   );
 };
