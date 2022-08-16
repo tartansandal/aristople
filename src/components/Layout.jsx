@@ -27,16 +27,16 @@ function Layout() {
       <Box textAlign="center" fontSize="md">
         <Grid
           templateAreas={`
-            "header header header"
-            "nav    main   urn"
-            "footer footer footer"
+            "header header header header header"
+            "lpad   nav    main   urn    rpad"
+            "footer footer footer footer footer"
           `}
           gridTemplateRows={'50px 1fr 30px'}
-          gridTemplateColumns={'220px 1fr 530px'}
+          gridTemplateColumns={'1fr 240px 740px 520px 1fr'}
           minH="100vh"
           gap="0"
         >
-          <GridItem  area={'header'} pl="2" bg="blue.100">
+          <GridItem area={'header'} bg="blue.100">
             <Flex>
               <Spacer />
               <Heading>Aristople</Heading>
@@ -44,13 +44,13 @@ function Layout() {
               <ColorModeSwitcher />
             </Flex>
           </GridItem>
-          <GridItem area={'nav'} pl="2" borderRightWidth={2}>
+          <GridItem area={'nav'} pl="2">
             <NavBar />
           </GridItem>
-          <GridItem area={'main'} p="2">
+          <GridItem area={'main'} px="5" borderLeftWidth={2} borderRightWidth={2}>
             <Outlet />
           </GridItem>
-          <GridItem area={'urn'} borderLeftWidth={2}>
+          <GridItem area={'urn'} pl="2">
             <Urn />
           </GridItem>
           <GridItem bg="blue.100" area={'footer'}>

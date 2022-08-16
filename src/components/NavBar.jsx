@@ -16,7 +16,7 @@ const NavBar = () => {
       </Link>
       <Link as={NavLink} to="hypothetical-syllogism">
         {({ isActive }) => (
-          <Button isActive={isActive}>Hypothetical Sylogism</Button>
+          <Button isActive={isActive}>Hypothetical Syllogism</Button>
         )}
       </Link>
       <Link as={NavLink} to="modus-ponens">
