@@ -1,4 +1,4 @@
-import { ColorModeScript } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react';
 import React, { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
@@ -14,10 +14,12 @@ const root = ReactDOM.createRoot(container);
 // Using a hash router since we deploy to github pages
 root.render(
   <StrictMode>
-    <ColorModeScript />
     <Provider store={store}>
       <HashRouter>
-        <App />
+        <ChakraProvider theme={theme}>
+          <ColorModeScript />
+          <App />
+        </ChakraProvider>
       </HashRouter>
     </Provider>
   </StrictMode>
