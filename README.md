@@ -1,6 +1,8 @@
 # Aristople
 
-Exploring conditional logic
+Exploring conditional logic with uncertainty and a discrete probability model.
+
+The source code for <https://tartansandal.github.io/aristople/>
 
 ## Available Scripts
 
