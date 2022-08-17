@@ -16,20 +16,11 @@ import {
   updateSmallWood,
   updateLargeWood,
   resetErrors,
-  resetRemainder,
 } from './urnSlice';
 
 // Factor out setting "maxValue" and "steps"
 const MyLogSlider = props => {
-  return (
-    <LogSlider
-      title={props.title}
-      value={props.value}
-      setter={props.setter}
-      maxValue={MAX_IN_URN}
-      steps={200}
-    />
-  );
+  return <LogSlider {...props} maxValue={MAX_IN_URN} steps={200} />;
 };
 
 const Urn = () => {
@@ -57,14 +48,12 @@ const Urn = () => {
   const updateSmallMetalValue = v => dispatch(updateSmallMetal(v));
   const updateLargeMetalValue = v => dispatch(updateLargeMetal(v));
 
-  const overflow = useSelector(state => state.urn.proposed.overflow);
-  const underflow = useSelector(state => state.urn.proposed.underflow);
-  const remainder = useSelector(state => state.urn.proposed.remainder);
+  const error = useSelector(state => state.urn.error);
 
   const toast = useToast();
 
   useEffect(() => {
-    if (overflow) {
+    if (error.overflow) {
       toast({
         title: 'Overflow',
         description: 'Attempted change would overflow the Urn',
@@ -73,12 +62,8 @@ const Urn = () => {
         duration: 3000,
         isClosable: true,
       });
-      dispatch(resetErrors());
     }
-  }, [overflow, dispatch, toast]);
-
-  useEffect(() => {
-    if (underflow) {
+    if (error.underflow) {
       toast({
         title: 'Underflow',
         description: 'Limiting a change that would underflow the Urn',
@@ -87,25 +72,21 @@ const Urn = () => {
         duration: 3000,
         isClosable: true,
       });
-      dispatch(resetErrors());
     }
-  }, [underflow, dispatch, toast]);
-
-  useEffect(() => {
-    if (remainder > 0) {
+    if (error.remainder) {
       toast({
         title: 'Remainder',
         description: `
-          Could not maintain exact ratios. 
-          Assigning ${remainder} ball(s) randomly`,
+          Could not maintain exact ratios.
+          Assigning one ball randomly`,
         status: 'warning',
         variant: 'top-accent',
         duration: 3000,
         isClosable: true,
       });
-      dispatch(resetRemainder());
     }
-  }, [remainder, dispatch, toast]);
+    dispatch(resetErrors());
+  }, [error, dispatch, toast]);
 
   return (
     <VStack spacing={5}>
@@ -126,6 +107,7 @@ const Urn = () => {
             title="Wood"
             value={woodValue}
             setter={updateWoodValue}
+            error={error}
           />
           <MyLogSlider
             title="Metal"

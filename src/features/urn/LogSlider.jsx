@@ -15,81 +15,85 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 
+import { useSelector } from 'react-redux';
+
 const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
   // cache an expensive calculation
-  const scale = steps / Math.log1p(maxValue/steps);
+  const scale = steps / Math.log1p(maxValue / steps);
 
   const log = useCallback(
-    (val) => {
+    val => {
       // inverse of our custom exp function
-      return Math.round(scale*(Math.log1p(val/steps)));
+      return Math.round(scale * Math.log1p(val / steps));
     },
-    [steps, scale],
+    [steps, scale]
   );
 
   const exp = useCallback(
-    (val) => {
+    val => {
       // inverse of or custom log function
-      return Math.round(steps*Math.expm1((val/scale)));
+      return Math.round(steps * Math.expm1(val / scale));
     },
-    [steps, scale],
+    [steps, scale]
   );
 
   const [showTooltip, setShowTooltip] = useState(false);
   const [sliderValue, setSliderValue] = useState(log(value));
 
+  // so we reset the slider on underflow or overflow
+  const overflow = useSelector(state => state.urn.error.overflow);
+  const underflow = useSelector(state => state.urn.error.underflow);
+
   // so adjacent sliders update when the state changes
-  useEffect( () => {
+  useEffect(() => {
     setSliderValue(log(value));
-    }, [value, log]
-  );
+  }, [value, log, overflow, underflow]);
 
   return (
-      <HStack spacing={5} >
-        <FormLabel m={0}>{title}</FormLabel>
-        <NumberInput
-          size="sm"
-          maxW="100px"
-          mr="1rem"
-          min={0}
-          max={maxValue}
-          value={value}
-          onChange={v => setter(v)}
+    <HStack spacing={5}>
+      <FormLabel m={0}>{title}</FormLabel>
+      <NumberInput
+        size="sm"
+        maxW="100px"
+        mr="1rem"
+        min={0}
+        max={maxValue}
+        value={value}
+        onChange={v => setter(v)}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+      <Slider
+        w={200}
+        flex="1"
+        focusThumbOnChange={false}
+        min={0}
+        max={steps}
+        value={sliderValue}
+        onChange={v => setSliderValue(v)}
+        onChangeEnd={v => setter(exp(v))}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <Tooltip
+          hasArrow
+          bg="blue.500"
+          color="white"
+          placement="top"
+          isOpen={showTooltip}
+          label={exp(sliderValue)}
         >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-        <Slider
-          w={200}
-          flex="1"
-          focusThumbOnChange={false}
-          min={0}
-          max={steps}
-          value={sliderValue}
-          onChange={v => setSliderValue(v)}
-          onChangeEnd={v => setter(exp(v))}
-
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <Tooltip
-            hasArrow
-            bg='blue.500'
-            color='white'
-            placement="top"
-            isOpen={showTooltip}
-            label={exp(sliderValue)}
-          >
-            <SliderThumb />
-          </Tooltip>
-        </Slider>
-      </HStack>
+          <SliderThumb />
+        </Tooltip>
+      </Slider>
+    </HStack>
   );
 };
 

@@ -62,31 +62,13 @@ const initialUrn = {
     large_metal: 0,
     small_wood: 0,
     large_wood: 0,
-
-    // Don't put error or remainder in this dictionary
   },
 
-  // Track a proposed change to current values
-  proposed: {
-    total: 0,
-
-    // Exclusive Materials
-    metal: 0,
-    wood: 0,
-
-    // Exclusive Sizes
-    small: 0,
-    large: 0,
-
-    // Exclusive Combinations
-    small_metal: 0,
-    large_metal: 0,
-    small_wood: 0,
-    large_wood: 0,
-
-    overflow: false,  // proposed change would overflow the urn
-    underflow: false, // proposed change would yeild negative counts
-    remainder: 0, // the remainer that has to be distributed
+  // current error state.
+  error: {
+    overflow: false, // proposed change overflowed the urn
+    underflow: false, // proposed change yielded negative counts
+    remainder: 0, // number of randomly distributed balls
   },
 };
 
@@ -149,7 +131,7 @@ const share_value = (value, sizes) => {
   return [parts, remainder];
 };
 
-const apply_constraints = (current, proposed) => {
+const apply_changes = (state, proposed) => {
   // Ensure our changes will result in a consistent state that reflects out
   // underlying constraints. For this we take the values for the "Combinations"
   // set as our base and let the results bubble up to the other sets and the
@@ -159,8 +141,9 @@ const apply_constraints = (current, proposed) => {
   // out of sync, we'll be defensive and allow for some potential crazy values
   // and adjust the results accordingly.
 
-  proposed.overflow = false;
-  proposed.underflow = false;
+  state.error.overflow = false;
+  state.error.underflow = false;
+  state.error.remainder = proposed.remainder;
 
   const combination_keys = [
     'small_wood',
@@ -173,7 +156,7 @@ const apply_constraints = (current, proposed) => {
   for (let key of combination_keys) {
     if (proposed[key] < 0) {
       proposed[key] = 0;
-      proposed.underflow = true;
+      state.error.underflow = true;
     }
   }
   // NB: The above also implies the total is not negative
@@ -190,17 +173,13 @@ const apply_constraints = (current, proposed) => {
 
   // Ensure we don't sum higher than the max that fits in the urn
   if (proposed.total > MAX_IN_URN) {
-    proposed.overflow = true;
-    // revert the proposed changes
-    for (let key in current) {
-      proposed[key] = current[key];
-    }
+    state.error.overflow = true;
     return; // abort this attempted modification
   }
 
   // propagate the proposed changes to current
-  for (let key in current) {
-    current[key] = proposed[key];
+  for (let key in state.current) {
+    state.current[key] = proposed[key];
   }
 };
 
@@ -209,10 +188,8 @@ export const urnSlice = createSlice({
   initialState: initialUrn,
   reducers: {
     updateTotal: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
-
-      const change = action.payload - current.total;
+      const proposed = { ...state.current };
+      const change = action.payload - state.current.total;
 
       if (change === 0 || isNaN(change)) return;
 
@@ -225,159 +202,137 @@ export const urnSlice = createSlice({
         ],
         remainder,
       ] = share_value(change, [
-        current.small_wood,
-        current.large_wood,
-        current.small_metal,
-        current.large_metal,
+        state.current.small_wood,
+        state.current.large_wood,
+        state.current.small_metal,
+        state.current.large_metal,
       ]);
 
       proposed.small_wood += small_wood_change;
       proposed.large_wood += large_wood_change;
       proposed.small_metal += small_metal_change;
       proposed.large_metal += large_metal_change;
-
       proposed.remainder = remainder;
 
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateWood: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
+      const proposed = { ...state.current };
 
-      const change = action.payload - current.wood;
+      const change = action.payload - state.current.wood;
 
       if (change === 0 || isNaN(change)) return;
 
       const [[small_wood_change, large_wood_change], remainder] = share_value(
         change,
-        [current.small_wood, current.large_wood]
+        [state.current.small_wood, state.current.large_wood]
       );
 
       proposed.small_wood += small_wood_change;
       proposed.large_wood += large_wood_change;
-
       proposed.remainder = remainder;
 
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateMetal: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
+      const proposed = { ...state.current };
 
-      const change = action.payload - current.metal;
+      const change = action.payload - state.current.metal;
 
       if (change === 0 || isNaN(change)) return;
 
       const [[small_metal_change, large_metal_change], remainder] = share_value(
         change,
-        [current.small_metal, current.large_metal]
+        [state.current.small_metal, state.current.large_metal]
       );
-
-      proposed.remainder = remainder;
 
       proposed.small_metal += small_metal_change;
       proposed.large_metal += large_metal_change;
-
       proposed.remainder = remainder;
 
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateSmall: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
-
-      const change = action.payload - current.small;
+      const proposed = { ...state.current };
+      const change = action.payload - state.current.small;
 
       if (change === 0 || isNaN(change)) return;
 
       const [[small_wood_change, small_metal_change], remainder] = share_value(
         change,
-        [current.small_wood, current.small_metal]
+        [state.current.small_wood, state.current.small_metal]
       );
 
       proposed.small_wood += small_wood_change;
       proposed.small_metal += small_metal_change;
-
       proposed.remainder = remainder;
 
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateLarge: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
-
-      const change = action.payload - current.large;
+      const proposed = { ...state.current };
+      const change = action.payload - state.current.large;
 
       if (change === 0 || isNaN(change)) return;
 
       const [[large_wood_change, large_metal_change], remainder] = share_value(
         change,
-        [current.large_wood, current.large_metal]
+        [state.current.large_wood, state.current.large_metal]
       );
 
       proposed.large_metal += large_metal_change;
       proposed.large_wood += large_wood_change;
-
       proposed.remainder = remainder;
 
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateSmallMetal: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
-
-      const change = action.payload - current.small_metal;
+      const proposed = { ...state.current };
+      const change = action.payload - state.current.small_metal;
 
       if (change === 0 || isNaN(change)) return;
 
       proposed.small_metal += change;
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateLargeMetal: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
-
-      const change = action.payload - current.large_metal;
+      const proposed = { ...state.current };
+      const change = action.payload - state.current.large_metal;
 
       if (change === 0 || isNaN(change)) return;
 
       proposed.large_metal += change;
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateSmallWood: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
-
-      const change = action.payload - current.small_wood;
+      const proposed = { ...state.current };
+      const change = action.payload - state.current.small_wood;
 
       if (change === 0 || isNaN(change)) return;
 
       proposed.small_wood += change;
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateLargeWood: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
-
-      const change = action.payload - current.large_wood;
+      const proposed = { ...state.current };
+      const change = action.payload - state.current.large_wood;
 
       if (change === 0 || isNaN(change)) return;
 
       proposed.large_wood += change;
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     updateAll: (state, action) => {
-      const current = state.current;
-      const proposed = state.proposed;
+      const proposed = { ...state.current };
 
       // TODO check each item is defined in payload?
 
@@ -386,16 +341,13 @@ export const urnSlice = createSlice({
       proposed.small_metal = action.payload.small_metal;
       proposed.large_metal = action.payload.large_metal;
 
-      apply_constraints(current, proposed);
+      apply_changes(state, proposed);
     },
 
     resetErrors: state => {
-      state.proposed.overflow = false;
-      state.proposed.underflow = false;
-    },
-
-    resetRemainder: state => {
-      state.proposed.remainder = 0;
+      state.error.overflow = false;
+      state.error.underflow = false;
+      state.error.remainder = 0;
     },
   },
 });
@@ -412,7 +364,6 @@ export const {
   updateLargeWood,
   updateAll,
   resetErrors,
-  resetRemainder,
 } = urnSlice.actions;
 
 export default urnSlice.reducer;
