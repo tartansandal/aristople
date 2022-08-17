@@ -21,7 +21,7 @@ const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10000 }) => {
 
   // See https://www.geogebra.org/graphing/dz9k95e4 for details of this
   // calulation
-  const c = 45   // this determines how sharply values increase with each step
+  const c = 45  // this determines how sharply values increase with each step
 
   // the following relation ensures the min is 0 and the max is maxValue
   const d = maxValue / Math.expm1(steps/c)
