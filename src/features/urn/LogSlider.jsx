@@ -17,24 +17,29 @@ import {
 
 import { useSelector } from 'react-redux';
 
-const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10001 }) => {
-  // cache an expensive calculation
-  const scale = steps / Math.log1p(maxValue / steps);
+const LogSlider = ({ title, value, setter, steps = 200, maxValue = 10000 }) => {
+
+  // See https://www.geogebra.org/graphing/dz9k95e4 for details of this
+  // calulation
+  const c = 45   // this determines how sharply values increase with each step
+
+  // the following relation ensures the min is 0 and the max is maxValue
+  const d = maxValue / Math.expm1(steps/c)
 
   const log = useCallback(
     val => {
       // inverse of our custom exp function
-      return Math.round(scale * Math.log1p(val / steps));
+      return Math.round(c * Math.log1p(val / d));
     },
-    [steps, scale]
+    [c,d]
   );
 
   const exp = useCallback(
     val => {
       // inverse of or custom log function
-      return Math.round(steps * Math.expm1(val / scale));
+      return Math.round(d * Math.expm1(val / c));
     },
-    [steps, scale]
+    [c,d]
   );
 
   const [showTooltip, setShowTooltip] = useState(false);

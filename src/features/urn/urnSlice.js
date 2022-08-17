@@ -81,8 +81,8 @@ const share_value = (value, sizes) => {
   // Split up "value" into an ordered list of integers according to the relative
   // sizes of "sizes" list.
   //
-  // Note: since apply_constraints() has been run, we can assume all the values
-  // in the "sizes" list are non-negative at this point.
+  // Note: since apply_changes() ensures a consistent urn, we can assume all the
+  // values in the "sizes" list are non-negative at this point.
 
   if (sizes.includes(0)) {
     // Nudge all sizes up so that zeros don't get too sticky
