@@ -4,6 +4,12 @@ Exploring conditional logic with uncertainty and a discrete probability model.
 
 The source code for <https://tartansandal.github.io/aristople/>
 
+## Technologies used
+
+This is a simple Create React App based on Chakra UI and using fairly standard
+React-Router and React-Redux setup.  There is also some Storybook setup, but it
+is not currently being used.
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -31,6 +37,11 @@ best performance.
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
+
+### `npm run deploy`
+
+Deploys the application to <https://tartansandal.github.io/aristople/> via
+GitHub Pages.
 
 See the section about
 [deployment](https://facebook.github.io/create-react-app/docs/deployment) for
